@@ -3,7 +3,7 @@ const session = require('express-session');
 const cors =  require('cors');
 const helmet = require('helmet');
 const path = require('path')
-const { connectToSpotifyAPI } = require('./spotify/spotify.js'); 
+const { connectToSpotifyAPI } = require('./spotify/spotify'); 
 
 require("dotenv").config()
 
