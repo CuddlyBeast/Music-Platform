@@ -1,0 +1,26 @@
+{
+  "development": {
+    "dialect": "postgres",
+    "host": "localhost",
+    "username": "postgres",
+    "password": "postgres",
+    "database": "music",
+    "port": 5432
+  },
+  "test": {
+    "dialect": "postgres",
+    "host": "localhost",
+    "username": "postgres",
+    "password": "postgres",
+    "database": "music",
+    "port": 5432
+  },
+  "production": {
+    "dialect": "postgres",
+    "host": "localhost",
+    "username": "postgres",
+    "password": "postgres",
+    "database": "music",
+    "port": 5432
+  }
+}

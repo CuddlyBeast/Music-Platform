@@ -1,0 +1,20 @@
+{
+  "name": "musicplatform",
+  "version": "1.0.0",
+  "description": "Music hosting platform using spotify api",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CuddlyBeast/Music-Platform.git"
+  },
+  "author": "Jonathan Cuddy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CuddlyBeast/Music-Platform/issues"
+  },
+  "homepage": "https://github.com/CuddlyBeast/Music-Platform#readme",
+  "keywords": []
+}
