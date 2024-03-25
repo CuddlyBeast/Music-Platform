@@ -3,7 +3,9 @@ const session = require('express-session');
 const cors =  require('cors');
 const helmet = require('helmet');
 const path = require('path')
-const { connectToSpotifyAPI } = require('./spotify/spotify'); 
+const { connectToSpotifyAPI } = require('./spotifyConnect'); 
+const spotifyAuthRoutes = require('./spotify/authRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 require("dotenv").config()
 
@@ -15,10 +17,10 @@ app.use(cors())
 app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"],
-        connectSrc: ["'self'"],
-        fontSrc: ["'self'"],
-        styleSrc: ["'self'"],
+        scriptSrc: ["'self'",  "https://unpkg.com/", "https://cdnjs.cloudflare.com"],
+        connectSrc: ["'self'", "https://unpkg.com/"],
+        fontSrc: ["'self'", "https://fonts.googleapis.com/", "https://fonts.gstatic.com", "https://unpkg.com/"],
+        styleSrc: ["'self'", "https://fonts.googleapis.com/", "https://unpkg.com/"],
         imgSrc: ["'self'"],
         frameSrc: ["'self'"], 
         formAction: ["'self'"]
@@ -35,11 +37,20 @@ app.use(session({
     store,
 }))
 
+app.use(express.static(path.join(__dirname, "public"))); 
+
+app.get('/', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 
 app.use((err, req, res, next) => {
     console.log(err.stack);
     res.status(500).send('Something went wrong!')
 })
+
+app.use('/chill', spotifyAuthRoutes);
+app.use('/chill', authRoutes);
 
 const PORT = process.env.PORT || 3000
 
