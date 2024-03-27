@@ -1,31 +1,89 @@
-const SpotifyWebApi = require('spotify-web-api-node');
+const express = require('express');
+const router = express.Router();
+const { spotifyApi } = require('./authRoutes');
 
-async function connectToSpotifyAPI() {
-  try {
-    // Create a new instance of SpotifyWebApi with your client credentials
-    const spotifyApi = new SpotifyWebApi({
-      clientId: '1e69079ae7904703a2c03ecab6c95f99',
-      clientSecret: '884af1572aaf41b7a20721b833844e63'
-    });
 
-    // Authenticate your application
-    const data = await spotifyApi.clientCredentialsGrant();
-    const accessToken = data.body['access_token'];
-
-    // Set access token to be used for subsequent requests
-    spotifyApi.setAccessToken(accessToken);
-
-    // Make requests to Spotify API
-    const trackData = await spotifyApi.getTrack('2TpxZ7JUBn3uw46aR7qd6V');
-
-    // Handle response data
-    console.log('Track:', trackData.body);
-  } catch (error) {
-    // Handle authentication or request errors
-    console.error('Error:', error);
+const ensureAccessToken = async (req, res, next) => {
+  if (!spotifyApi.getAccessToken()) {
+      return res.status(401).json({ error: 'Access token missing or expired' });
   }
-}
 
-module.exports = { connectToSpotifyAPI };
+  try {
+      // Make a test request to Spotify API to check if the access token is still valid
+      await spotifyApi.getMe();
+  } catch (error) {
+      if (error.statusCode === 401) {
+          // Access token expired, attempt to refresh it
+          try {
+              const data = await spotifyApi.refreshAccessToken();
+              const access_token = data.body['access_token'];
+              spotifyApi.setAccessToken(access_token);
+              req.access_token = access_token; // Store the new access token in the request object
+          } catch (error) {
+              return res.status(500).json({ error: 'Failed to refresh access token' });
+          }
+      } else {
+          console.error('Error checking access token:', error);
+          return res.status(500).json({ error: 'An error occurred while checking access token' });
+      }
+  }
 
+  next();
+};
+
+// Route for retrieving details of a specific track from Spotify
+router.get('/tracks/:trackId', ensureAccessToken, async (req, res) => {
+    const { trackId } = req.params;
+    try {
+        const track = await spotifyApi.getTrack(trackId);
+        res.json(track.body);
+    } catch (error) {
+        console.error('Error retrieving track:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving the track.' });
+    }
+});
+
+
+
+// Route for retrieving details of a specific album from Spotify
+router.get('/albums/:albumId', ensureAccessToken, async (req, res) => {
+    const { albumId } = req.params;
+    try {
+        const album = await spotifyApi.getAlbum(albumId);
+        res.json(album.body);
+    } catch (error) {
+        console.error('Error retrieving album:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving the album.' });
+    }
+});
+
+
+
+// Route for retrieving details of a specific artist from Spotify
+router.get('/artists/:artistId', ensureAccessToken, async (req, res) => {
+    const { artistId } = req.params;
+    try {
+        const artist = await spotifyApi.getArtist(artistId);
+        res.json(artist.body);
+    } catch (error) {
+        console.error('Error retrieving artist:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving the artist.' });
+    }
+});
+
+
+
+// Route for searching tracks, albums, or artists on Spotify 
+router.get('/search', ensureAccessToken, async (req, res) => {
+    const { q, type } = req.query; // q is the search query, type is the type of search (track, album, artist)
+    try {
+        const searchResults = await spotifyApi.search(q, [type]);
+        res.json(searchResults.body);
+    } catch (error) {
+        console.error('Error searching on Spotify:', error);
+        res.status(500).json({ error: 'An error occurred while searching on Spotify.' });
+    }
+});
+
+module.exports = router;
 

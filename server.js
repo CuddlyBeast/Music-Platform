@@ -4,7 +4,9 @@ const cors =  require('cors');
 const helmet = require('helmet');
 const path = require('path')
 const { connectToSpotifyAPI } = require('./spotifyConnect'); 
-const spotifyAuthRoutes = require('./spotify/authRoutes');
+const { router: spotifyAuthRoutes } = require('./spotify/authRoutes');
+const spotifyRoutes= require('./spotify/spotifyRoutes');
+const spotifyPlaybackRoutes= require('./spotify/playbackRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 require("dotenv").config()
@@ -18,11 +20,11 @@ app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'",  "https://unpkg.com/", "https://cdnjs.cloudflare.com"],
-        connectSrc: ["'self'", "https://unpkg.com/"],
+        connectSrc: ["'self'", "https://unpkg.com/", "https://accounts.spotify.com"],
         fontSrc: ["'self'", "https://fonts.googleapis.com/", "https://fonts.gstatic.com", "https://unpkg.com/"],
         styleSrc: ["'self'", "https://fonts.googleapis.com/", "https://unpkg.com/"],
         imgSrc: ["'self'"],
-        frameSrc: ["'self'"], 
+        frameSrc: ["'self'", "http://localhost:3000/"], 
         formAction: ["'self'"]
     }
 }))
@@ -50,6 +52,8 @@ app.use((err, req, res, next) => {
 })
 
 app.use('/chill', spotifyAuthRoutes);
+app.use('/chill', spotifyRoutes);
+app.use('/chill', spotifyPlaybackRoutes);
 app.use('/chill', authRoutes);
 
 const PORT = process.env.PORT || 3000
