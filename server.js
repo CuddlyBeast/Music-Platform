@@ -45,6 +45,13 @@ app.get('/', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+app.get('/genres', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "genres.html"));
+});
+
+app.get('/topSongs', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "topSongs.html"));
+});
 
 app.use((err, req, res, next) => {
     console.log(err.stack);
