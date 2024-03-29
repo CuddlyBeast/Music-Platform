@@ -254,6 +254,11 @@ html, body{
     font-size: 12px;
 }
 
+.container main .playlist .genres .header a:hover,
+.container main .playlist .music-list .header a:hover{
+    color: #5773ff;
+}
+
 .container main .playlist .genres .items{
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -321,6 +326,15 @@ html, body{
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container main .playlist .music-list .items .item:hover{
+    background-color: rgba(59, 59, 59, 0.979);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 3px;
+    cursor: pointer;
 }
 
 .container main .playlist .music-list .items .item:last-child{
@@ -368,6 +382,7 @@ html, body{
 
 .container main .playlist .music-list .items .item .actions i{
     color: #919191;
+    font-size: 26px;
 }
 
 .container .right-section{

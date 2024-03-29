@@ -57,6 +57,10 @@ app.get('/country', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "main.html"));
 });
 
+app.get('/playlist', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "playlist.html"));
+});
+
 app.use((err, req, res, next) => {
     console.log(err.stack);
     res.status(500).send('Something went wrong!')

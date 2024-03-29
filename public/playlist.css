@@ -233,19 +233,6 @@ html, body{
 }
 
 
-.container main .playlist .music-list .header{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 30px;
-}
-
-.container main .playlist .music-list .header a{
-    color: #919191;
-    font-size: 12px;
-}
-
-
 
 .container main .playlist .music-list{
     background-color: #202026;
@@ -253,6 +240,25 @@ html, body{
     color: #fff;
     border-radius: 6px;
     width: 100%;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.container main .playlist .music-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.container main .playlist .music-list::-webkit-scrollbar-thumb {
+    background-color: #888; 
+    border-radius: 10px;
+}
+
+.container main .playlist .music-list::-webkit-scrollbar-thumb:hover {
+    background-color: #666; 
+}
+
+.container main .playlist .music-list::-webkit-scrollbar-track {
+    background-color: #333; 
 }
 
 
@@ -285,14 +291,14 @@ html, body{
 
 .container main .playlist .music-list .items .item .info p{
     color: #919191;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: bold;
     margin-top: 6px;
 }
 
 .container main .playlist .music-list .items .item .info img{
-    width: 65px;
-    height: 65px;
+    width: 45px;
+    height: 45px;
 }
 
 .container main .playlist .music-list .items .item .actions p{
@@ -661,14 +667,19 @@ html, body{
 
     .container main header .nav-links button,
     .container .sidebar .logo button{
-        display: flex;
-    }
+    display: flex;
+}
     
 }
 
 @media screen and (max-width: 768px) {
     .container{
         grid-template-columns: 1fr;
+    }
+
+    .container main .trending,
+    .container main .playlist{
+          display: none;  
     }
 
     .container main header .search{
@@ -697,74 +708,8 @@ html, body{
         height: 190px;
     }
 
-}
-
-
-
-@media screen and (max-width: 435px) {
-    .container{
-        grid-template-columns: 1fr;
-    }
-
-    .container main {
-        padding: none;
-    }
-
-    .container main header .search{
-        width: 30%;
-    }
-
-    .container main header .search input{
-        display: block;
-    }
-
-    .container .right-section{
-        padding: 20px 36px;
-    }
-
-    .container .right-section .profile{
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    .container .right-section .music-player{
-        height: 100%;
-    }
-
-    .container .right-section .music-player .song-info img{
-        width: 300px;
-        height: 190px;
-    }
-
     .container .right-section .music-player .buttons i{
-        font-size: 14px;
-    }
-
-    .container main .playlist .music-list .items .item .info p{
-        font-size: 12px;
-    }
-
-    
-    .container main .playlist .music-list .items .item .actions p{
-        font-size: 12px;
-    }
-    
-    .container main .playlist .music-list .items .item .actions .icon i{
-        font-size: 12px;
-    }
-    
-    .container main .playlist .music-list .items .item .actions i{
-        font-size: 20px;
-    }
-
-    .container main .playlist .music-list .items .item .info,
-    .container main .playlist .music-list .items .item .actions{
-        gap: 10px;
-    }
-
-    .container main .playlist .music-list .items .item .info img{
-        width: 60px;
-        height: 60px;
+        font-size: 22px;
     }
 
 }

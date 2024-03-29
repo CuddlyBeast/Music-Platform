@@ -183,6 +183,14 @@ html, body{
 .container main .trending .left .info{
     margin-top: 8px;
     padding: 18px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container main .trending .left .info:hover{
+    background-color: rgba(59, 59, 59, 0.979);
+    border-radius: 8px;
+    transform: translateY(-3px); 
+    cursor: pointer;
 }
 
 .container main .trending .left .info h2{
@@ -228,6 +236,28 @@ html, body{
 .container main .trending img{
     width: 175px;
     height: 150px;
+}
+
+#pagination{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+#pagination a{
+    text-decoration: none;
+    background-color: #5773ff;
+    border: 1px solid white;
+    padding: 10px 15px;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 600;
+}
+
+#pagination a i{
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .container .right-section{
