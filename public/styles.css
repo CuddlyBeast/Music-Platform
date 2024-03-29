@@ -268,6 +268,13 @@ html, body{
     justify-content: center;
     border-radius: 6px;
     cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container main .playlist .genres .items .item:hover {
+    transform: translateY(-3px); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
 }
 
 .container main .playlist .genres .items .item p{
@@ -276,27 +283,27 @@ html, body{
 }
 
 .container main .playlist .genres .items .item:nth-child(1){
-    background-color: #476a8a;
+    background: linear-gradient(135deg, #aaf8ff, #0b7af8);
 }
 
 .container main .playlist .genres .items .item:nth-child(2){
-    background-color: #a69984;
+    background: linear-gradient(135deg, #ffef60, #af7d7d);
 }
 
 .container main .playlist .genres .items .item:nth-child(3){
-    background-color: #a24c34;
+    background: linear-gradient(135deg, #a24c34, #ffb326);
 }
 
 .container main .playlist .genres .items .item:nth-child(4){
-    background-color: #0d4045;
+    background: linear-gradient(135deg, #0d4045, #005bc4);
 }
 
 .container main .playlist .genres .items .item:nth-child(5){
-    background-color: #a67894;
+    background: linear-gradient(135deg, #a67894, #f03131);
 }
 
 .container main .playlist .genres .items .item:nth-child(6){
-    background-color: #5547a5;
+    background: linear-gradient(135deg, #5547a5, #fc20f1);
 }
 
 
@@ -365,6 +372,7 @@ html, body{
 
 .container .right-section{
     padding: 20px 36px 20px 0;
+    max-height: 1000px;
 }
 
 .container .right-section .profile{
