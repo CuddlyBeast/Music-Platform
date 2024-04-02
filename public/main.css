@@ -184,6 +184,7 @@ html, body{
     margin-top: 8px;
     padding: 18px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 200px;
 }
 
 .container main .trending .left .info:hover{

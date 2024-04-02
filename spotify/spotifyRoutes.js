@@ -85,5 +85,107 @@ router.get('/search', ensureAccessToken, async (req, res) => {
     }
 });
 
+// Route for retrieving the top country songs from Spotify
+router.get('/playlists/top-country-songs', ensureAccessToken, async (req, res) => {
+    try {
+
+        const topTracks = await spotifyApi.getRecommendations({
+            limit: 50,
+            seed_genres: ['country'], 
+            min_popularity: 10, 
+            market: 'US', 
+        });
+
+        const topCountrySongs = topTracks.body.tracks.map(item => ({
+            title: item.name,
+            artist: item.artists.map(artist => artist.name).join(', '),
+            albumImageUrl: item.album.images[0].url,
+            duration: formatDuration(item.duration_ms)
+        }));
+
+        res.json({ songs: topCountrySongs });
+    } catch (error) {
+        console.error('Error retrieving recommended country songs:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving recommended country songs.' });
+    }
+});
+
+router.post('/genre-songs', ensureAccessToken, async (req, res) => {
+    const { artistIds } = req.body;
+    try {
+        const allSongs = [];
+        for (const artistId of artistIds) {
+            const response = await spotifyApi.getArtistTopTracks(artistId, 'US');
+            const topTracks = response.body.tracks.map(track => ({
+                title: track.name,
+                artists: track.artists.map(artist => artist.name).join(', '),
+                albumImageUrl: track.album.images[0].url,
+                duration: formatDuration(track.duration_ms)
+            }));
+            allSongs.push(...topTracks);
+        }
+        res.json({ songs: allSongs });
+    } catch (error) {
+        console.error('Error fetching top tracks:', error);
+        res.status(500).json({ error: 'An error occurred while fetching top tracks.' });
+    }
+});
+
+// Route for retrieving Spotify country playlists
+router.get('/playlists/country', ensureAccessToken, async (req, res) => {
+    try {
+        // Retrieve country playlists from Spotify
+        const countryPlaylists = await spotifyApi.getPlaylistsForCategory('country', { limit: 10 });
+
+        const playlists = countryPlaylists.body.playlists.items.map(playlist => ({
+            id: playlist.id,
+            name: playlist.name,
+            imageUrl: playlist.images.length > 0 ? playlist.images[0].url : '', // Use the first image if available
+            tracksUrl: playlist.tracks.href // URL to fetch tracks of the playlist
+        }));
+
+        res.json({ playlists });
+    } catch (error) {
+        console.error('Error retrieving country playlists:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving country playlists.' });
+    }
+});
+
+// Route for retrieving details of a specific playlist from Spotify
+router.get('/playlists/:id', ensureAccessToken, async (req, res) => {
+    try {
+        const playlistId = req.params.id;
+       
+        const playlist = await spotifyApi.getPlaylist(playlistId);
+
+        const playlistDetails = {
+            name: playlist.body.name,
+            description: playlist.body.description,
+            playCount: playlist.body.tracks.total,
+            imageUrl: playlist.body.images.length > 0 ? playlist.body.images[0].url : '',
+            tracks: playlist.body.tracks.items.map(item => ({
+                name: item.track.name,
+                artist: item.track.artists.map(artist => artist.name).join(', '),
+                imageUrl: item.track.album.images.length > 0 ? item.track.album.images[0].url : '',
+                duration: formatDuration(item.track.duration_ms)
+            }))
+        };
+
+        res.json(playlistDetails);
+    } catch (error) {
+        console.error('Error retrieving playlist:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving the playlist.' });
+    }
+});
+
+
+
+function formatDuration(duration_ms) {
+    const minutes = Math.floor(duration_ms / 60000);
+    const seconds = ((duration_ms % 60000) / 1000).toFixed(0);
+    return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+}
+
+
 module.exports = router;
 

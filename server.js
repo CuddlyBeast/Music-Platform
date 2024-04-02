@@ -18,12 +18,12 @@ app.use(cors())
 
 app.use(helmet.contentSecurityPolicy({
     directives: {
-        defaultSrc: ["'self'"],
+        defaultSrc: ["'self'", "https://i.scdn.co"],
         scriptSrc: ["'self'",  "https://unpkg.com/", "https://cdnjs.cloudflare.com"],
         connectSrc: ["'self'", "https://unpkg.com/", "https://accounts.spotify.com"],
         fontSrc: ["'self'", "https://fonts.googleapis.com/", "https://fonts.gstatic.com", "https://unpkg.com/"],
         styleSrc: ["'self'", "https://fonts.googleapis.com/", "https://unpkg.com/"],
-        imgSrc: ["'self'"],
+        imgSrc: ["'self'", "https://i.scdn.co"],
         frameSrc: ["'self'", "http://localhost:3000/"], 
         formAction: ["'self'"]
     }
@@ -49,8 +49,8 @@ app.get('/genres', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "genres.html"));
 });
 
-app.get('/topSongs', (req, res, next) => {
-    res.sendFile(path.join(__dirname, "public", "topSongs.html"));
+app.get('/recommendations', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "recommendations.html"));
 });
 
 app.get('/country', (req, res, next) => {
@@ -59,6 +59,10 @@ app.get('/country', (req, res, next) => {
 
 app.get('/playlist', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "playlist.html"));
+});
+
+app.get('/genreSongs', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "genreSongs.html"));
 });
 
 app.use((err, req, res, next) => {
