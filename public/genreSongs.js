@@ -1,3 +1,5 @@
+// could also add recommendation in genres based on artists
+
 document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     const genre = params.get('genre');

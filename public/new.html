@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="main.css">
     <title>Music Player Platform</title>
 </head>
 <body>
@@ -51,7 +51,7 @@
                     </li>
                     <li>
                         <i class='bx bxs-photo-album' ></i>
-                        <a href="#">Albums</a>
+                        <a href="/albums">Albums</a>
                     </li>
                     <li>
                         <i class='bx bxs-heart' ></i>
@@ -118,63 +118,14 @@
             </header>
 
             <div class="trending">
-                <div class="left">
-                    <h5>Trending Now!</h5>
-                    <div class="info">
-                        <h2>Empty Space</h2>
-                        <h4>James Arthur</h4>
-                        <h5>74 Million Plays</h5>
-                        <div class="buttons">
-                            <button>Listen Now</button>
-                            <i class='bx bxs-heart' ></i>
-                        </div>
-                    </div>
-                </div>
-                <img src="assets/trend.png">
-            </div>
-
-            <div class="playlist">
-                <div class="genres">
-                    <div class="header">
-                        <h5>Genres</h5>
-                        <a href="/genres">View more</a>
-                    </div>
-
-                    <div class="items">
-                        <div class="item">
-                            <p>Alternative<br>Country</p>
-                        </div>
-                        <div class="item">
-                            <p>Blues<br>Country</p>
-                        </div>
-                        <div class="item">
-                            <p>Country<br>Rap</p>
-                        </div>
-                        <div class="item">
-                            <p>Country<br>Soul</p>
-                        </div>
-                        <div class="item">
-                            <p>Country<br>Rock</p>
-                        </div>
-                        <div class="item">
-                            <p>Country<br>Pop</p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="music-list">
-                    <div class="header">
-                        <h5>Recommendations</h5>
-                        <a href="/recommendations">View more</a>
-                    </div>
-
-                
-                <div id="recommendations-holder" class="items">
-
+                <div id="playlist-container" class="left">
+                   
                 </div>
             </div>
-        </div>
+
+            <section id="pagination">
+
+            </section>
         </main>
 
         <div class="right-section">
@@ -234,7 +185,6 @@
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spotify-web-api-node/5.1.1/spotify-web-api-node.min.js"></script>
-    <script src="spotify.js"></script>
-    <script src="script.js"></script>
+    <script src="new.js"></script>
 </body>
 </html>

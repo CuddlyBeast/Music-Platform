@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         let currentPage = 1;
 
         // Fetch total number of playlists
-        const totalResponse = await fetch('http://localhost:3000/chill/playlists/total');
+        const totalResponse = await fetch('http://localhost:3000/chill/newCountry?q=new%20country%20releases&type=playlist');
+
         if (!totalResponse.ok) {
             throw new Error('Failed to fetch total number of playlists');
         }
@@ -12,13 +13,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         const totalPlaylists = totalData.playlists.length;
 
 
-        // Calculate total number of pages
         const totalPages = Math.ceil(totalPlaylists / itemsPerPage);
 
         // Fetch initial playlists
         await fetchPlaylistsByPage(currentPage, itemsPerPage);
 
-        // Add pagination links
         const paginationContainer = document.getElementById('pagination');
         paginationContainer.innerHTML = '';
 
@@ -51,12 +50,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 async function fetchPlaylistsByPage(page, limit) {
-    const response = await fetch(`http://localhost:3000/chill/playlists/country?page=${page}&limit=${limit}`);
+    const response = await fetch(`http://localhost:3000/chill/newCountryLimit?q=new%20country%20releases&type=playlist&page=${page}&limit=${limit}`);
     if (!response.ok) {
         throw new Error('Failed to fetch country playlists');
     }
     const data = await response.json();
     const playlists = data.playlists;
+
+    console.log(playlists)
 
     const container = document.getElementById('playlist-container');
     container.innerHTML = ''; 

@@ -241,7 +241,7 @@ html, body{
     border-radius: 6px;
     width: 100%;
     overflow-y: auto;
-    max-height: 600px;
+    max-height: 550px;
 }
 
 .container main .playlist .music-list::-webkit-scrollbar {
