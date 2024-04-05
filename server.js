@@ -65,9 +65,18 @@ app.get('/albums', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "albums.html"));
 });
 
+app.get('/artists', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "artists.html"));
+});
+
 app.get('/selectedAlbum', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "selectedAlbum.html"));
 });
+
+app.get('/selectedArtist', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "selectedArtist.html"));
+});
+
 
 app.get('/playlist', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "playlist.html"));

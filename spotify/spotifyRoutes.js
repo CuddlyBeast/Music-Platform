@@ -46,19 +46,6 @@ router.get('/tracks/:trackId', ensureAccessToken, async (req, res) => {
 
 
 
-// Route for retrieving details of a specific artist from Spotify
-router.get('/artists/:artistId', ensureAccessToken, async (req, res) => {
-    const { artistId } = req.params;
-    try {
-        const artist = await spotifyApi.getArtist(artistId);
-        res.json(artist.body);
-    } catch (error) {
-        console.error('Error retrieving artist:', error);
-        res.status(500).json({ error: 'An error occurred while retrieving the artist.' });
-    }
-});
-
-
 // Route for retrieving the top country songs from Spotify
 router.get('/playlists/top-country-songs', ensureAccessToken, async (req, res) => {
     try {
@@ -378,77 +365,116 @@ router.get('/albumsLimit', ensureAccessToken, async (req, res) => {
 
 
 
-
-
 router.get('/artistsTotal', ensureAccessToken, async (req, res) => {
     try {
 
-        const countryArtists = await spotifyApi.searchArtists('country', { limit: 50 }); 
-        const artistIds = countryArtists.body.artists.items.map(artist => artist.id);
-        
-        // Fetch albums of country genre artists
-        const countryAlbumsPromises = artistIds.map(async (artistId) => {
-            const albumsResponse = await spotifyApi.getArtistAlbums(artistId);
-            return albumsResponse.body.items;
+        const topArtistsResponse = await spotifyApi.getPlaylistsForCategory('country', { limit: 1 });
+        const playlistId = topArtistsResponse.body.playlists.items[0].id;
+        const playlistTracksResponse = await spotifyApi.getPlaylistTracks(playlistId, { limit: 50 });
+
+        // Create a set of unique artist IDs
+        const artistIdsSet = new Set();
+        playlistTracksResponse.body.items.forEach(item => {
+            artistIdsSet.add(item.track.artists[0].id);
         });
-        
-        // Wait for all album requests to complete
-        const countryAlbumsResponses = await Promise.all(countryAlbumsPromises);
-        
-        // Flatten the array of album arrays into a single array of albums
-        const countryAlbums = countryAlbumsResponses.flat();
-        
-        // Map the albums to the desired format
-        const formattedAlbums = countryAlbums.map(album => ({
-            id: album.id,
-            name: album.name,
-            imageUrl: album.images.length > 0 ? album.images[0].url : '', 
-            artists: album.artists.map(artist => artist.name),
-            releaseDate: album.release_date,
-            tracksUrl: album.tracks && album.tracks.href 
-        }));
 
+        const artistIds = Array.from(artistIdsSet);
 
-        res.json({ newAlbums, formattedAlbums });
+        // Fetch information about the top country artists
+        const artistsInfoPromises = artistIds.map(async artistId => {
+            const artistInfoResponse = await spotifyApi.getArtist(artistId);
+            const artistInfo = artistInfoResponse.body;
+            return {
+                id: artistInfo.id,
+                name: artistInfo.name,
+                imageUrl: artistInfo.images.length > 0 ? artistInfo.images[0].url : '',
+                popularity: artistInfo.popularity,
+                followers: artistInfo.followers.total
+            };
+        });
+
+        const artistsInfo = await Promise.all(artistsInfoPromises);
+
+        res.json({ artistsInfo });
     } catch (error) {
-        console.error('Error retrieving new country albums:', error);
-        res.status(500).json({ error: 'An error occurred while retrieving new country albums.' });
+        console.error('Error retrieving popular country artists:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving popular country artists.' });
     }
 });
 
 // Route for retrieving popular artists releases in the country genre
 router.get('/artistsLimit', ensureAccessToken, async (req, res) => {
     try {
-         // Retrieve popular album releases in the country genre from Spotify with limitations
-         const countryArtists = await spotifyApi.searchArtists('country', { limit: 50 }); 
-         const artistIds = countryArtists.body.artists.items.map(artist => artist.id);
-         
-         // Fetch albums of country genre artists
-         const countryAlbumsPromises = artistIds.map(async (artistId) => {
-             const albumsResponse = await spotifyApi.getArtistAlbums(artistId);
-             return albumsResponse.body.items;
-         });
-         
-         // Wait for all album requests to complete
-         const countryAlbumsResponses = await Promise.all(countryAlbumsPromises);
-         
-         // Flatten the array of album arrays into a single array of albums
-         const countryAlbums = countryAlbumsResponses.flat();
-         
-         // Map the albums to the desired format
-         const formattedAlbums = countryAlbums.map(album => ({
-             id: album.id,
-             name: album.name,
-             imageUrl: album.images.length > 0 ? album.images[0].url : '', 
-             artists: album.artists.map(artist => artist.name),
-             releaseDate: album.release_date,
-             tracksUrl: album.tracks && album.tracks.href 
-         }));
- 
-        res.json({ formattedAlbums });
+        const { page, limit } = req.query;
+        const offset = (page - 1) * limit;
+        const targetOffset = offset + parseInt(limit);
+
+       // Retrieve popular artists releases in the country genre from Spotify with limitations
+       const topArtistsResponse = await spotifyApi.getPlaylistsForCategory('country', { limit: 1 });
+       const playlistId = topArtistsResponse.body.playlists.items[0].id;
+       const playlistTracksResponse = await spotifyApi.getPlaylistTracks(playlistId, { limit: 50 });
+
+       // Create a set of unique artist IDs
+       const artistIdsSet = new Set();
+       playlistTracksResponse.body.items.forEach(item => {
+           artistIdsSet.add(item.track.artists[0].id);
+       });
+
+        // Convert the set to an array
+        const allArtistIds = Array.from(artistIdsSet);
+
+        // Filter the artist IDs based on the offset and limit
+        const paginatedArtistIds = allArtistIds.filter((id, index) => index >= offset && index < targetOffset);
+
+
+       // Fetch information about the top country artists
+       const artistsInfoPromises = paginatedArtistIds.map(async artistId => {
+           const artistInfoResponse = await spotifyApi.getArtist(artistId);
+           const artistInfo = artistInfoResponse.body;
+           return {
+               id: artistInfo.id,
+               name: artistInfo.name,
+               imageUrl: artistInfo.images.length > 0 ? artistInfo.images[0].url : '',
+               popularity: artistInfo.popularity,
+               followers: artistInfo.followers.total
+           };
+       });
+
+       const artistsInfo = await Promise.all(artistsInfoPromises);
+
+       res.json({ artistsInfo });
     } catch (error) {
-        console.error('Error retrieving popular country artists:', error);
-        res.status(500).json({ error: 'An error occurred while retrieving popular country artists.' });
+        console.error('Error retrieving popular country with limits:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving popular country artists with limits.' });
+    }
+});
+
+
+
+// Route for retrieving the albums of a specific artist from Spotify
+router.get('/totalArtistAlbums/:id', ensureAccessToken, async (req, res) => {
+    const { id: artistId } = req.params;
+    try {
+        const artist = await spotifyApi.getArtistAlbums(artistId);
+        res.json(artist.body);
+    } catch (error) {
+        console.error('Error retrieving artist:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving the artist albums.' });
+    }
+});
+
+
+// Route for retrieving the albums of a specific artist from Spotify with limits
+router.get('/limitArtistAlbums/:id', ensureAccessToken, async (req, res) => {
+    const { id: artistId } = req.params;
+    const { page, limit } = req.query;
+    const offset = (page - 1) * limit;
+    try {
+        const artist = await spotifyApi.getArtistAlbums(artistId, { limit, offset });
+        res.json(artist.body);
+    } catch (error) {
+        console.error('Error retrieving artist:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving the artist albums.' });
     }
 });
 
