@@ -23,7 +23,7 @@ app.use(helmet.contentSecurityPolicy({
         connectSrc: ["'self'", "https://unpkg.com/", "https://accounts.spotify.com"],
         fontSrc: ["'self'", "https://fonts.googleapis.com/", "https://fonts.gstatic.com", "https://unpkg.com/"],
         styleSrc: ["'self'", "https://fonts.googleapis.com/", "https://unpkg.com/"],
-        imgSrc: ["'self'", "https://i.scdn.co", "https://image-cdn-ak.spotifycdn.com", 'https://mosaic.scdn.co', 'https://image-cdn-fa', 'https://image-cdn-fa.spotifycdn.com/'],
+        imgSrc: ["'self'", "https://i.scdn.co", "https://image-cdn-ak.spotifycdn.com", 'https://mosaic.scdn.co', 'https://image-cdn-fa', 'https://image-cdn-fa.spotifycdn.com/', 'https://seed-mix-image.spotifycdn.com'],
         frameSrc: ["'self'", "http://localhost:3000/"], 
         formAction: ["'self'"]
     }
@@ -84,6 +84,14 @@ app.get('/playlist', (req, res, next) => {
 
 app.get('/genreSongs', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "genreSongs.html"));
+});
+
+app.get('/relax', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "relax.html"));
+});
+
+app.get('/party', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "party.html"));
 });
 
 app.use((err, req, res, next) => {

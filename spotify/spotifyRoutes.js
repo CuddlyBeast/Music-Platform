@@ -370,7 +370,7 @@ router.get('/artistsTotal', ensureAccessToken, async (req, res) => {
 
         const topArtistsResponse = await spotifyApi.getPlaylistsForCategory('country', { limit: 1 });
         const playlistId = topArtistsResponse.body.playlists.items[0].id;
-        const playlistTracksResponse = await spotifyApi.getPlaylistTracks(playlistId, { limit: 50 });
+        const playlistTracksResponse = await spotifyApi.getPlaylistTracks(playlistId, { limit: 100 });
 
         // Create a set of unique artist IDs
         const artistIdsSet = new Set();
@@ -412,7 +412,7 @@ router.get('/artistsLimit', ensureAccessToken, async (req, res) => {
        // Retrieve popular artists releases in the country genre from Spotify with limitations
        const topArtistsResponse = await spotifyApi.getPlaylistsForCategory('country', { limit: 1 });
        const playlistId = topArtistsResponse.body.playlists.items[0].id;
-       const playlistTracksResponse = await spotifyApi.getPlaylistTracks(playlistId, { limit: 50 });
+       const playlistTracksResponse = await spotifyApi.getPlaylistTracks(playlistId, { limit: 100 });
 
        // Create a set of unique artist IDs
        const artistIdsSet = new Set();
