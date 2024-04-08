@@ -479,6 +479,159 @@ router.get('/limitArtistAlbums/:id', ensureAccessToken, async (req, res) => {
 });
 
 
+router.get('/recentlyPlayedTracks', ensureAccessToken, async (req, res) => {
+    try {
+        const recentlyPlayedResponse = await spotifyApi.getMyRecentlyPlayedTracks();
+        const recentlyPlayedTracks = recentlyPlayedResponse.body.items;
+        res.json(recentlyPlayedTracks);
+    } catch (error) {
+        console.error('Error retrieving recently played tracks:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving recently played tracks.' });
+    }
+});
+
+
+router.get('/recentlyPlayedAlbums', ensureAccessToken, async (req, res) => {
+    try {
+        const recentlyPlayedResponse = await spotifyApi.getMyRecentlyPlayedTracks();
+        const recentlyPlayedTracks = recentlyPlayedResponse.body.items;
+
+        // Extract album IDs from the recently played tracks
+        const albumIds = recentlyPlayedTracks
+        .filter(track => track.track.album.album_type === 'album') 
+        .map(track => track.track.album.id);
+
+        // Fetch album details for each album ID
+        const albumDetailsPromises = albumIds.map(albumId => spotifyApi.getAlbum(albumId));
+        const albumDetailsResponses = await Promise.all(albumDetailsPromises);
+        const albumDetails = albumDetailsResponses.map(response => response.body);
+
+        res.json(albumDetails);
+    } catch (error) {
+        console.error('Error retrieving recently played albums:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving recently played albums.' });
+    }
+});
+
+
+router.get('/recentlyPlayedAlbumsLimit', ensureAccessToken, async (req, res) => {
+    try {
+        const { page, limit } = req.query;
+        const offset = (page - 1) * limit;
+
+        const recentlyPlayedResponse = await spotifyApi.getMyRecentlyPlayedTracks();
+        const recentlyPlayedTracks = recentlyPlayedResponse.body.items;
+
+        // Extract album IDs from the recently played tracks
+        const albumIds = recentlyPlayedTracks
+        .filter(track => track.track.album.album_type === 'album') 
+        .map(track => track.track.album.id);
+
+        const paginatedAlbumIds = albumIds.slice(offset, offset + limit);
+
+        // Fetch album details for each album ID
+        const albumDetailsPromises = paginatedAlbumIds.map(albumId => spotifyApi.getAlbum(albumId));
+        const albumDetailsResponses = await Promise.all(albumDetailsPromises);
+        const albumDetails = albumDetailsResponses.map(response => response.body);
+
+        res.json(albumDetails);
+    } catch (error) {
+        console.error('Error retrieving recently played albums:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving recently played albums.' });
+    }
+});
+
+router.get('/mySavedTracks', ensureAccessToken, async (req, res) => {
+    try {
+        const savedTracksResponse = await spotifyApi.getMySavedTracks();
+        const savedTracks = savedTracksResponse.body.items;
+        
+        res.json(savedTracks);
+    } catch (error) {
+        console.error('Error retrieving saved tracks:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving saved tracks.' });
+    }
+});
+
+router.get('/mySavedAlbums', ensureAccessToken, async (req, res) => {
+    try {
+        const savedAlbumsResponse = await spotifyApi.getMySavedAlbums();
+        const savedAlbums = savedAlbumsResponse.body.items;
+
+        res.json(savedAlbums);
+    } catch (error) {
+        console.error('Error retrieving saved albums:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving saved albums.' });
+    }
+});
+
+router.get('/mySavedAlbumsLimit', ensureAccessToken, async (req, res) => {
+    try {
+        const { page, limit } = req.query;
+        const offset = (page - 1) * limit;
+
+        const savedAlbumsResponse = await spotifyApi.getMySavedAlbums({limit: limit, offset: offset});
+        const savedAlbums = savedAlbumsResponse.body.items;
+
+        res.json(savedAlbums);
+    } catch (error) {
+        console.error('Error retrieving saved albums:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving saved albums.' });
+    }
+});
+
+router.get('/mySavedPlaylists', ensureAccessToken, async (req, res) => {
+    try {
+        const savedPlaylistsResponse = await spotifyApi.getUserPlaylists();
+        const savedPlaylists = savedPlaylistsResponse.body.items;
+
+        const playlists = savedPlaylists.map(playlist => {
+            return {
+                id: playlist.id,
+                name: playlist.name,
+                owner: playlist.owner.display_name,
+                tracks: playlist.tracks.total,
+                href: playlist.href,
+                uri: playlist.uri,
+                image: playlist.images.length > 0 ? playlist.images[0].url : null
+            };
+        });
+
+        res.json(playlists);
+    } catch (error) {
+        console.error('Error retrieving user\'s saved playlists:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving user\'s saved playlists.' });
+    }
+});
+
+router.get('/mySavedPlaylistsLimit', ensureAccessToken, async (req, res) => {
+    try {
+        const { page, limit } = req.query;
+        const offset = (page - 1) * limit;
+
+        const savedPlaylistsResponse = await spotifyApi.getUserPlaylists({limit: limit, offset: offset});
+        const savedPlaylists = savedPlaylistsResponse.body.items;
+
+        const playlists = savedPlaylists.map(playlist => {
+            return {
+                id: playlist.id,
+                name: playlist.name,
+                owner: playlist.owner.display_name,
+                tracks: playlist.tracks.total,
+                href: playlist.href,
+                uri: playlist.uri,
+                image: playlist.images.length > 0 ? playlist.images[0].url : null
+            };
+        });
+
+        res.json(playlists);
+    } catch (error) {
+        console.error('Error retrieving user\'s saved playlists:', error);
+        res.status(500).json({ error: 'An error occurred while retrieving user\'s saved playlists.' });
+    }
+});
+
+
 module.exports = router;
 
 
