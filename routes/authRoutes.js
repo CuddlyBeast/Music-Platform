@@ -95,7 +95,7 @@ router.post('/logout', async (req, res) => {
     try {
       const userId = req.user.id;
       const user = await User.findOne({ where: { id: userId } });
-      res.status(200).send(user)
+      res.status(200).send({ username: user.username, email: user.email });
     } catch (error) {
       res.status(500).send({ error: "Internal Server Error"})
     }

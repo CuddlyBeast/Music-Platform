@@ -41,7 +41,6 @@ html, body{
     padding: 20px 36px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     z-index: 10000;
     transition: all 0.6s ease;
 }
@@ -60,6 +59,40 @@ html, body{
 .container .sidebar .logo a{
     font-weight: bold;
     transition: all 0.3s ease;
+}
+
+.container .sidebar .menu{
+    margin-top: 70px;
+}
+
+#playlist-creation{
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 200px;
+    max-width: 225px;
+    text-wrap: wrap;
+    padding-right: 10px;
+}
+
+#playlist-creation li a{
+    text-overflow: ellipsis;
+}
+
+#playlist-creation::-webkit-scrollbar {
+    width: 8px;
+}
+
+#playlist-creation::-webkit-scrollbar-thumb {
+    background-color: #888; 
+    border-radius: 10px;
+}
+
+#playlist-creation::-webkit-scrollbar-thumb:hover {
+    background-color: #666; 
+}
+
+#playlist-creation::-webkit-scrollbar-track {
+    background-color: #333; 
 }
 
 .container .sidebar .logo a:hover,

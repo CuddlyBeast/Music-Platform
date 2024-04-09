@@ -33,8 +33,6 @@ router.get('/callback', async (req, res) => {
         console.log('Received access token:', access_token);
         console.log('Received refresh token:', refresh_token);
 
-        // req.session.access_token = access_token;
-        // req.session.refresh_token = refresh_token;
 
         spotifyApi.setAccessToken(access_token);
         spotifyApi.setRefreshToken(refresh_token);

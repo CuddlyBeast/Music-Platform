@@ -4,9 +4,9 @@ const { authenticateUser } = require('../middleware/authenticationMiddleware')
 
 const router = express.Router();
 
-router.get("/playlists/:playlistId", authenticateUser, async (req, res) => {
+router.get("/personalPlaylist/:id", authenticateUser, async (req, res) => {
     try {
-        const { playlistId } = req.params;
+        const { id: playlistId } = req.params;
         const userId = req.user.id;
 
         const playlist = await Playlist.findOne({ where: { id: playlistId, userId: userId } });
@@ -18,7 +18,10 @@ router.get("/playlists/:playlistId", authenticateUser, async (req, res) => {
         // Fetch all tracks linked to the specified playlist
         const playlistTracks = await PlaylistTrack.findAll({
             where: { playlistId: playlistId },
-            include: [{ model: Track }]
+            include: [
+                { model: Track },
+                { model: Playlist }
+            ]
         });
 
         res.send(playlistTracks);
@@ -28,7 +31,7 @@ router.get("/playlists/:playlistId", authenticateUser, async (req, res) => {
     }
 });
 
-router.put("/playlists/:playlistId", authenticateUser, async (req, res) => {
+router.put("/personalPlaylist/:id", authenticateUser, async (req, res) => {
     try {
         const { playlistId } = req.params;
         const userId = req.user.id;
@@ -96,7 +99,7 @@ router.post("/playlist", authenticateUser, async (req, res) => {
         });
 
         res.send({
-            message: "Playlist successful",
+            message: "Playlist Created successfully",
             Playlist: {
             id: newPlaylist.id,
             userId: newPlaylist.userId,

@@ -8,6 +8,9 @@ const { router: spotifyAuthRoutes } = require('./spotify/authRoutes');
 const spotifyRoutes= require('./spotify/spotifyRoutes');
 const spotifyPlaybackRoutes= require('./spotify/playbackRoutes');
 const authRoutes = require('./routes/authRoutes');
+const playlistRoutes = require('./routes/playlistRoutes');
+const trackRoutes = require('./routes/trackRoutes');
+const interactionRoutes = require('./routes/interactionRoutes');
 
 require("dotenv").config()
 
@@ -45,6 +48,10 @@ app.get('/', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+app.get('/authenticate', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "authenticate.html"));
+});
+
 app.get('/genres', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "genres.html"));
 });
@@ -54,7 +61,7 @@ app.get('/recommendations', (req, res, next) => {
 });
 
 app.get('/country', (req, res, next) => {
-    res.sendFile(path.join(__dirname, "public", "main.html"));
+    res.sendFile(path.join(__dirname, "public", "popular.html"));
 });
 
 app.get('/new', (req, res, next) => {
@@ -114,6 +121,10 @@ app.get('/myPlaylists', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "myPlaylists.html"));
 });
 
+app.get('/YouCountryPlaylist', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "youCountryPlaylist.html"));
+});
+
 
 app.use((err, req, res, next) => {
     console.log(err.stack);
@@ -124,6 +135,9 @@ app.use('/chill', spotifyAuthRoutes);
 app.use('/chill', spotifyRoutes);
 app.use('/chill', spotifyPlaybackRoutes);
 app.use('/chill', authRoutes);
+app.use('/chill', playlistRoutes);
+app.use('/chill', trackRoutes);
+app.use('/chill', interactionRoutes);
 
 const PORT = process.env.PORT || 3000
 

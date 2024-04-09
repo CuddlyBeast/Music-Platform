@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-up And Sign-in</title>
+    <link rel="stylesheet" href="authenticate.css">
+</head>
+<body>
+    <div class="hero">
+
+        <div class="wrapper">
+            <div class="form-box login">
+                <h2>Login</h2>
+                <form action="#" id="login-form">
+                    <div class="input-box">
+                        <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                        <input type="email" name="email" id="email" required>
+                        <label>Email</label>
+                    </div>
+                    <div class="input-box">
+                        <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                        <input type="password" name="password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 8 characters long" required>
+                        <label>Password</label>
+                    </div>
+                    <div class="remember-forgot">
+                        <label><input type="checkbox">Remember me</label>
+                        <a href="#">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                    <div id="login-message" class="display-message"></div>
+                    <div class="login-register">
+                        <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                        <a href="/" class="return-button"><ion-icon name="storefront-outline"></ion-icon>Return</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="form-box register">
+                <h2>Registration</h2>
+                <form action="#" id="registration-form">
+                    <div class="input-box">
+                        <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                        <input type="text" name="username" required>
+                        <label>Username</label>
+                    </div>
+                    <div class="input-box">
+                        <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                        <input type="email" name="email" required>
+                        <label>Email</label>
+                    </div>
+                    <div class="input-box">
+                        <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                        <input type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 8 characters long" required>
+                        <label>Password</label>
+                    </div>
+                    <div class="remember-forgot">
+                        <label><input type="checkbox" required>I agree to the terms & conditions</label>
+                    </div>
+                    <button type="submit" class="btn">Register</button>
+                    <div id="registration-message" class="display-message"></div>
+                    <div class="login-register">
+                        <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+                        <a href="/" class="return-button"><ion-icon name="storefront-outline"></ion-icon>Return</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script src="authenticate.js"></script>
+</body>
+</html>
