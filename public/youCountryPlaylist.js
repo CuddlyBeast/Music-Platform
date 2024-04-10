@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             <img src="${myPlaylist.Playlist.image}">
         `;
 
-
         const tracksContainer = document.querySelector('.playlist .music-list .items');
         tracksContainer.innerHTML = '';
         playlist.forEach((track, index) => {

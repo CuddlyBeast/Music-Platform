@@ -36,6 +36,7 @@ router.get('/tracks/:trackId', ensureAccessToken, async (req, res) => {
     const { trackId } = req.params;
     try {
         const track = await spotifyApi.getTrack(trackId);
+  
         res.json(track.body);
     } catch (error) {
         console.error('Error retrieving track:', error);
@@ -58,6 +59,7 @@ router.get('/playlists/top-country-songs', ensureAccessToken, async (req, res) =
         });
 
         const topCountrySongs = topTracks.body.tracks.map(item => ({
+            id: item.id,
             title: item.name,
             artist: item.artists.map(artist => artist.name).join(', '),
             albumImageUrl: item.album.images[0].url,

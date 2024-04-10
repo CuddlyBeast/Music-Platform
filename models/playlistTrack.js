@@ -11,13 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Playlist, { foreignKey: 'playlistId' });
-      this.belongsTo(models.Track, { foreignKey: 'trackId' });
+      this.belongsTo(models.Track, { foreignKey: 'spotifyId',  targetKey: 'spotifyId' });
     }
   }
   PlaylistTrack.init({
     playlistId: DataTypes.INTEGER,
-    trackId: DataTypes.INTEGER,
-    addedAt: DataTypes.DATE
+    spotifyId: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'PlaylistTrack',

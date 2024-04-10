@@ -37,5 +37,37 @@ router.get('/tracks/search', authenticateUser, async (req, res) => {
 });
 
 
+router.post("/track", authenticateUser, async (req, res) => {
+    try {
+        const { spotifyId, title, artist, album, durationMs, releaseDate } = req.body; 
+
+        const newTrack = await Track.create({
+            spotifyId,
+            title,
+            artist,
+            album,
+            durationMs,
+            releaseDate,
+        });
+
+        res.send({
+            message: "Track Created successfully",
+            Track: {
+            id: newTrack.id,
+            spotifyId: newTrack.spotifyId,
+            title: newTrack.title,
+            artist: newTrack.artist,
+            album: newTrack.album,
+            durationMs: newTrack.durationMs,
+            releaseDate: newTrack.releaseDate,
+            }
+        })
+
+    } catch (error) {
+        console.error('Error creating Track:', error);
+        res.status(500).send({ error: "Internal Server Error" });
+    }
+});
+
 
 module.exports = router;

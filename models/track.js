@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsToMany(models.Playlist, {
         through: 'PlaylistTrack',
-        foreignKey: 'trackId',
+        foreignKey: 'spotifyId',
         as: 'playlists'
       });
 
-      this.hasMany(models.UserInteraction, { foreignKey: 'trackId' });
+      this.hasMany(models.UserInteraction, { foreignKey: 'spotifyId' });
     }
   }
   Track.init({

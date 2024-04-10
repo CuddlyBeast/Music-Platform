@@ -33,9 +33,10 @@ router.get("/personalPlaylist/:id", authenticateUser, async (req, res) => {
 
 router.put("/personalPlaylist/:id", authenticateUser, async (req, res) => {
     try {
-        const { playlistId } = req.params;
+        console.log(req.body);
+        const { id: playlistId } = req.params;
         const userId = req.user.id;
-        const { action, trackId } = req.body;
+        const { action, spotifyId } = req.body;
 
         const playlist = await Playlist.findOne({ where: { id: playlistId, userId: userId } });
 
@@ -44,16 +45,21 @@ router.put("/personalPlaylist/:id", authenticateUser, async (req, res) => {
         }
 
         if (action === 'add') {
+            const existingTrack = await PlaylistTrack.findOne({ where: { playlistId: playlistId, spotifyId: spotifyId } });
+            if (existingTrack) {
+                return res.status(400).send({ error: "Track is already in the playlist" });
+            }
+
             await PlaylistTrack.create({
                 playlistId: playlistId,
-                trackId: trackId
+                spotifyId: spotifyId
             });
 
             return res.send({ message: "Track added to playlist successfully" });
         } else if (action === 'remove') {
 
             await PlaylistTrack.destroy({
-                where: { playlistId: playlistId, trackId: trackId }
+                where: { playlistId: playlistId, spotifyId: spotifyId }
             });
 
             return res.send({ message: "Track removed from playlist successfully" });
