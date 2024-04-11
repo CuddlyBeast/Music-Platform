@@ -74,12 +74,12 @@
 
             <div class="menu">
                 <h5>Playlist</h5>
-                <ul>
+                <ul id="playlist-creation">
                     <li>
                         <i class='bx bxs-plus-square' ></i>
-                        <a href="#">Create New</a>
+                        <a href="#" id="createNewPlaylist">Create New</a>
                     </li>
-
+                    
                 </ul>
             </div>
 
@@ -118,14 +118,12 @@
 
 
             <div class="profile">
-                <i class='bx bxs-bell' ></i>
-                <i class='bx bxs-cog' ></i>
                 <div class="user">
                     <div class="left">
-                        <img src="assets/profile.png">
+                        <a href="/authenticate"><img src="assets/genres/pexels-keith-wako-89909.jpg"></a>
                     </div>
                     <div class="right">
-                        <h5>Jonathan Cuddy</h5>
+                        <a href="/authenticate"><h5 id="username">Sign-in To YouCountry?</h5></a>
                     </div>
                 </div>
             </div>
@@ -172,5 +170,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spotify-web-api-node/5.1.1/spotify-web-api-node.min.js"></script>
     <script src="albums.js"></script>
+    <script src="user.js"></script>
+    <script src="overlayAddToPlaylist.js"></script>
 </body>
 </html>

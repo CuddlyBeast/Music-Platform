@@ -203,6 +203,7 @@ router.get('/albums/:id', ensureAccessToken, async (req, res) => {
             release_date_precision: album.body.release_date_precision,
             total_tracks: album.body.total_tracks,
             tracks: album.body.tracks.items.map(item => ({
+                id: item.id,
                 name: item.name,
                 artist: item.artists.map(artist => artist.name).join(', '),
                 duration: formatDuration(item.duration_ms)

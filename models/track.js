@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'playlists'
       });
 
-      this.hasMany(models.UserInteraction, { foreignKey: 'spotifyId' });
+      this.hasMany(models.UserInteraction, { foreignKey: 'trackId' });
     }
   }
   Track.init({
@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     album: DataTypes.STRING,
     durationMs: DataTypes.INTEGER,
     releaseDate: DataTypes.DATE,
+    image: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Track',

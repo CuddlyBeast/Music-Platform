@@ -27,8 +27,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             <div class="left">
                 <div class="info">
                     <h2>${myPlaylist.Playlist.title}</h2>
-                    <h4>Last Updated: ${myPlaylist.Playlist.updatedAt.slice(11, 19)} | ${myPlaylist.Playlist.updatedAt.slice(0, 10)} </h4>
-                    <h5>Created At: ${myPlaylist.Playlist.createdAt.slice(11, 19)} | ${myPlaylist.Playlist.createdAt.slice(0, 10)}</h5> 
+                    <h4>Created At: ${myPlaylist.Playlist.createdAt.slice(11, 19)} | ${myPlaylist.Playlist.createdAt.slice(0, 10)}</h4> 
                     <div class="buttons">
                         <button>Follow</button>
                         <i class='bx bxs-heart'></i>
@@ -46,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             trackItem.innerHTML = `
                 <div class="info">
                     <p>${index + 1}</p>
+                    <img src="${track.Track.image}">
                     <div class="details">
                         <h5>${track.Track.title}</h5>
                         <p>${track.Track.artist}</p>
@@ -59,6 +59,27 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <i class='bx bxs-plus-square'></i>
                 </div>
             `;
+
+            const plusIcon = trackItem.querySelector('.bx.bxs-plus-square');
+
+            plusIcon.addEventListener('click', async (event) => {
+                const token = localStorage.getItem('token');
+                const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+    
+                if (!playlistsResponse.ok) {
+                    throw new Error('Failed to fetch user playlists');
+                }
+    
+                const playlistsData = await playlistsResponse.json();
+                const playlistContainer = populateOverlayMenu(playlistsData);
+                displayOverlayMenu(event, track.Track.spotifyId, playlistContainer);
+            });
+
             tracksContainer.appendChild(trackItem);
         });
     } catch (error) {

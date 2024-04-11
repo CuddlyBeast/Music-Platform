@@ -39,29 +39,50 @@ router.get('/tracks/search', authenticateUser, async (req, res) => {
 
 router.post("/track", authenticateUser, async (req, res) => {
     try {
-        const { spotifyId, title, artist, album, durationMs, releaseDate } = req.body; 
+        console.log('req track body',req.body)
+        const { spotifyId, title, artist, album, durationMs, releaseDate, image } = req.body; 
 
-        const newTrack = await Track.create({
-            spotifyId,
-            title,
-            artist,
-            album,
-            durationMs,
-            releaseDate,
-        });
+    const existingTrack = await Track.findOne({ where: { spotifyId } });
 
-        res.send({
-            message: "Track Created successfully",
-            Track: {
-            id: newTrack.id,
-            spotifyId: newTrack.spotifyId,
-            title: newTrack.title,
-            artist: newTrack.artist,
-            album: newTrack.album,
-            durationMs: newTrack.durationMs,
-            releaseDate: newTrack.releaseDate,
-            }
-        })
+        if (existingTrack) {
+            res.send({
+                message: "Track already exists",
+                Track: {
+                    id: existingTrack.id,
+                    spotifyId: existingTrack.spotifyId,
+                    title: existingTrack.title,
+                    artist: existingTrack.artist,
+                    album: existingTrack.album,
+                    durationMs: existingTrack.durationMs,
+                    releaseDate: existingTrack.releaseDate,
+                    image: existingTrack.image,
+                }
+            });
+        } else {
+            const newTrack = await Track.create({
+                spotifyId,
+                title,
+                artist,
+                album,
+                durationMs,
+                releaseDate,
+                image,
+            });
+
+            res.send({
+                message: "Track created successfully",
+                Track: {
+                    id: newTrack.id,
+                    spotifyId: newTrack.spotifyId,
+                    title: newTrack.title,
+                    artist: newTrack.artist,
+                    album: newTrack.album,
+                    durationMs: newTrack.durationMs,
+                    releaseDate: newTrack.releaseDate,
+                    image: newTrack.image,
+                }
+            });
+        }
 
     } catch (error) {
         console.error('Error creating Track:', error);
