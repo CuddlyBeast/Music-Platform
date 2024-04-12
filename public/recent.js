@@ -51,6 +51,24 @@ document.addEventListener('DOMContentLoaded', async function() {
             const plusIcon = document.createElement('i');
             plusIcon.classList.add('bx', 'bxs-plus-square');
 
+            plusIcon.addEventListener('click', async (event) => {
+                const token = localStorage.getItem('token');
+                const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!playlistsResponse.ok) {
+                    throw new Error('Failed to fetch user playlists');
+                }
+
+                const playlistsData = await playlistsResponse.json();
+                const playlistContainer = populateOverlayMenu(playlistsData);
+                displayOverlayMenu(event, track.track.id, playlistContainer);
+            });
+
             actions.appendChild(duration);
             actions.appendChild(icon);
             actions.appendChild(plusIcon);

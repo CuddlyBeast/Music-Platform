@@ -80,6 +80,7 @@ router.post('/genre-songs', ensureAccessToken, async (req, res) => {
         for (const artistId of artistIds) {
             const response = await spotifyApi.getArtistTopTracks(artistId, 'US');
             const topTracks = response.body.tracks.map(track => ({
+                id: track.id,
                 title: track.name,
                 artists: track.artists.map(artist => artist.name).join(', '),
                 albumImageUrl: track.album.images[0].url,
@@ -95,6 +96,7 @@ router.post('/genre-songs', ensureAccessToken, async (req, res) => {
         });
     
         const recommendationTracks = recommendationsResponse.body.tracks.map(track => ({
+            id: track.id,
             title: track.name,
             artists: track.artists.map(artist => artist.name).join(', '),
             albumImageUrl: track.album.images[0].url,
@@ -164,6 +166,7 @@ router.get('/playlists/:id', ensureAccessToken, async (req, res) => {
             playCount: playlist.body.tracks.total,
             imageUrl: playlist.body.images.length > 0 ? playlist.body.images[0].url : '',
             tracks: playlist.body.tracks.items.map(item => ({
+                id: item.track.id,
                 name: item.track.name,
                 artist: item.track.artists.map(artist => artist.name).join(', '),
                 imageUrl: item.track.album.images.length > 0 ? item.track.album.images[0].url : '',

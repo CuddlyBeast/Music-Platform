@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <h2>${myPlaylist.Playlist.title}</h2>
                     <h4>Created At: ${myPlaylist.Playlist.createdAt.slice(11, 19)} | ${myPlaylist.Playlist.createdAt.slice(0, 10)}</h4> 
                     <div class="buttons">
-                        <button>Follow</button>
+                        <button>Delete</button>
                         <i class='bx bxs-heart'></i>
                     </div>
                 </div>

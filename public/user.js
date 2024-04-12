@@ -126,8 +126,10 @@ const fetchUserData = async (token) => {
 
         if (response.ok) {
             const userData = await response.json();
-            // Update username
+
             updateUsername(userData.username);
+
+            addLogoutButton();
         } else {
             console.error('Failed to fetch user data');
         }
@@ -151,3 +153,33 @@ if (token) {
     fetchUserData(token);
 }
 })
+
+const addLogoutButton = () => {
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'logout-button';
+    logoutButton.textContent = 'Logout';
+    logoutButton.addEventListener('click', async () => {
+    try {
+        const response = await fetch('http://localhost:3000/chill/logout', {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+        // Clear the token from localStorage
+        localStorage.removeItem('token');
+        // Redirect to the login page or any other desired action
+        window.location.href = '/'; 
+        } else {
+            console.error('Failed to fetch logout response');
+        }
+    } catch (error) {
+        console.error('Error Logging Out User:', error);
+    }
+    });
+
+     const profileElement = document.querySelector('.profile');
+
+    const userElement = document.querySelector('.user');
+
+    profileElement.insertBefore(logoutButton, userElement);
+};
