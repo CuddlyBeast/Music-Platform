@@ -56,9 +56,38 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <div class="icon">
                         <i class='bx bxs-right-arrow'></i>
                     </div>
+                    <i class='bx bx-x-circle'></i>
                     <i class='bx bxs-plus-square'></i>
                 </div>
             `;
+
+            const removeButton = trackItem.querySelector('.bx.bx-x-circle')
+
+            removeButton.addEventListener('click', async () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const selectedPlaylist = urlParams.get('id');
+                const token = localStorage.getItem('token');
+                const spotifyId = track.Track.spotifyId; 
+                const action = 'remove';
+                try {
+                    const response = await fetch(`http://localhost:3000/chill/personalPlaylist/${selectedPlaylist}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ spotifyId, action })
+                        });
+
+                        if (response.ok) {
+                            window.location.reload();
+                        }else{
+                            throw new Error('Failed to fetch playlist details necessary for deletion');
+                        }
+                } catch (error) {
+                    console.error('Error removing track from the playlist:', error);
+                }   
+            })
 
             const plusIcon = trackItem.querySelector('.bx.bxs-plus-square');
 
