@@ -638,6 +638,48 @@ router.get('/mySavedPlaylistsLimit', ensureAccessToken, async (req, res) => {
 });
 
 
+router.get('/search', ensureAccessToken, async (req, res) => {
+    try {
+        const { filter, searchText } = req.query;
+
+        let searchType = '';
+        switch (filter) {
+            case 'tracks':
+                searchType = 'track';
+                break;
+            case 'playlists':
+                searchType = 'playlist';
+                break;
+            case 'artists':
+                searchType = 'artist';
+                break;
+            case 'albums':
+                searchType = 'album';
+                break;
+            default:
+                searchType = 'track';
+        }
+
+        const options = {
+            limit: 20,
+            market: 'US' 
+            //need to create own logic to search for only country genre but might be better to just allow user the freedom to search anything
+        };
+
+        const searchResults = await spotifyApi.search(searchText, [searchType], options);
+
+        console.log(searchResults.body)
+           
+        res.json(searchResults.body);
+    } catch (error) {
+        console.error('Error fetching search results:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// NEED TO CREATE A SEARCH FUNCTION WITH LIMIT FOR PAGINATION  
+
+
 module.exports = router;
 
 

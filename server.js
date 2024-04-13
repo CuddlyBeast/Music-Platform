@@ -125,6 +125,22 @@ app.get('/YouCountryPlaylist', (req, res, next) => {
     res.sendFile(path.join(__dirname, "public", "youCountryPlaylist.html"));
 });
 
+app.get('/searchAlbums', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "searchAlbums.html"));
+});
+
+app.get('/searchArtists', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "searchArtists.html"));
+});
+
+app.get('/searchPlaylists', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "searchPlaylists.html"));
+});
+
+app.get('/searchTracks', (req, res, next) => {
+    res.sendFile(path.join(__dirname, "public", "searchTracks.html"));
+});
+
 
 app.use((err, req, res, next) => {
     console.log(err.stack);
