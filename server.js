@@ -26,7 +26,7 @@ app.use(helmet.contentSecurityPolicy({
         connectSrc: ["'self'", "https://unpkg.com/", "https://accounts.spotify.com"],
         fontSrc: ["'self'", "https://fonts.googleapis.com/", "https://fonts.gstatic.com", "https://unpkg.com/"],
         styleSrc: ["'self'", "https://fonts.googleapis.com/", "https://unpkg.com/"],
-        imgSrc: ["'self'", "https://i.scdn.co", "https://image-cdn-ak.spotifycdn.com", 'https://mosaic.scdn.co', 'https://image-cdn-fa', 'https://image-cdn-fa.spotifycdn.com/', 'https://seed-mix-image.spotifycdn.com', 'https://i2o.scdn.co'],
+        imgSrc: ["'self'", "https://i.scdn.co", "https://image-cdn-ak.spotifycdn.com", 'https://mosaic.scdn.co', 'https://image-cdn-fa', 'https://image-cdn-fa.spotifycdn.com/', 'https://seed-mix-image.spotifycdn.com', 'https://i2o.scdn.co', 'https://seeded-session-images.scdn.co', 'https://thisis-images.spotifycdn.com'],
         frameSrc: ["'self'", "http://localhost:3000/"], 
         formAction: ["'self'"]
     }

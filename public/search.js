@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         if (filter === 'tracks') {
 
-        data.forEach((track, index) => {
+        data.tracks.items.forEach((track, index) => {
             const item = document.createElement('div');
             item.classList.add('item');
 
@@ -29,16 +29,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             trackNumber.textContent = (index + 1).toString().padStart(2, '0');
 
             const img = document.createElement('img');
-            img.src = track.track.album.images[0].url; 
+            img.src = track.album.images[0].url; 
 
             const details = document.createElement('div');
             details.classList.add('details');
 
             const title = document.createElement('h5');
-            title.textContent = track.track.name;
+            title.textContent = track.name;
 
             const artist = document.createElement('p');
-            artist.textContent = track.track.artists.map(artist => artist.name).join(', '); 
+            artist.textContent = track.artists.map(artist => artist.name).join(', '); 
 
             details.appendChild(title);
             details.appendChild(artist);
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             actions.classList.add('actions');
 
             const duration = document.createElement('p');
-            duration.textContent = formatDuration(track.track.duration_ms); 
+            duration.textContent = formatDuration(track.duration_ms); 
 
             const icon = document.createElement('div');
             icon.classList.add('icon');
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 const playlistsData = await playlistsResponse.json();
                 const playlistContainer = populateOverlayMenu(playlistsData);
-                displayOverlayMenu(event, track.track.id, playlistContainer);
+                displayOverlayMenu(event, track.id, playlistContainer);
             });
 
             actions.appendChild(duration);
@@ -93,13 +93,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         const itemsPerPage = 8; 
         let currentPage = 1;
 
-        const totalAlbums = data.newAlbums.length;
+        const totalAlbums = data.albums.items.length;
 
         
         const totalPages = Math.ceil(totalAlbums / itemsPerPage);
 
         // Fetch initial albums
-        await fetchAlbumsByPage(currentPage, itemsPerPage);
+        await fetchAlbumsByPage(filter, searchText, currentPage, itemsPerPage);
 
         const paginationContainer = document.getElementById('pagination');
         paginationContainer.innerHTML = '';
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             pageLink.textContent = i;
             pageLink.addEventListener('click', async () => {
                 currentPage = i;
-                await fetchAlbumsByPage(currentPage, itemsPerPage);
+                await fetchAlbumsByPage(filter, searchText, currentPage, itemsPerPage);
             });
             paginationContainer.appendChild(pageLink);
         }
@@ -121,16 +121,88 @@ document.addEventListener('DOMContentLoaded', async function() {
         nextPageButton.addEventListener('click', async () => {
             if (currentPage < totalPages) {
                 currentPage++;
-                await fetchAlbumsByPage(currentPage, itemsPerPage);
+                await fetchAlbumsByPage(filter, searchText, currentPage, itemsPerPage);
+            }
+        });
+
+        paginationContainer.appendChild(nextPageButton);
+
+    } else if (filter === 'playlists') {
+
+        const itemsPerPage = 8; 
+        let currentPage = 1;
+
+        const totalPlaylists = data.playlists.items.length;
+
+        
+        const totalPages = Math.ceil(totalPlaylists / itemsPerPage);
+
+        // Fetch initial albums
+        await fetchPlaylistsByPage(filter, searchText, currentPage, itemsPerPage);
+
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.href = '#';
+            pageLink.textContent = i;
+            pageLink.addEventListener('click', async () => {
+                currentPage = i;
+                await fetchPlaylistsByPage(filter, searchText, currentPage, itemsPerPage);
+            });
+            paginationContainer.appendChild(pageLink);
+        }
+
+        const nextPageButton = document.createElement('a');
+        nextPageButton.href = '#';
+        nextPageButton.innerHTML = '<i class="bx bx-right-arrow-alt"></i>';
+        nextPageButton.addEventListener('click', async () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                await fetchPlaylistsByPage(filter, searchText, currentPage, itemsPerPage);
             }
         });
 
         paginationContainer.appendChild(nextPageButton);
 
     } else if (filter === 'artists') {
+        const itemsPerPage = 8; 
+        let currentPage = 1;
 
-    } else if (filter === 'playlists') {
+        const totalArtists = data.artists.items.length;
 
+        
+        const totalPages = Math.ceil(totalArtists / itemsPerPage);
+
+        // Fetch initial albums
+        await fetchArtistsByPage(filter, searchText, currentPage, itemsPerPage);
+
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.href = '#';
+            pageLink.textContent = i;
+            pageLink.addEventListener('click', async () => {
+                currentPage = i;
+                await fetchArtistsByPage(filter, searchText, currentPage, itemsPerPage);
+            });
+            paginationContainer.appendChild(pageLink);
+        }
+
+        const nextPageButton = document.createElement('a');
+        nextPageButton.href = '#';
+        nextPageButton.innerHTML = '<i class="bx bx-right-arrow-alt"></i>';
+        nextPageButton.addEventListener('click', async () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                await fetchArtistsByPage(filter, searchText, currentPage, itemsPerPage);
+            }
+        });
+
+        paginationContainer.appendChild(nextPageButton);
     }
 
 
@@ -149,15 +221,14 @@ function formatDuration(duration_ms) {
 }
 
 
-// Need to change response and make limit search function 
 
-async function fetchAlbumsByPage(page, limit) {
-    const response = await fetch(`http://localhost:3000/chill/albumsLimit?page=${page}&limit=${limit}`);
+async function fetchAlbumsByPage(filter, searchText, page, limit) {
+    const response = await fetch(`http://localhost:3000/chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
     if (!response.ok) {
         throw new Error('Failed to fetch country albums');
     }
     const data = await response.json();
-    const albums = data.newAlbums;
+    const albums = data.albums.items;
 
     const container = document.getElementById('albums-container');
     container.innerHTML = ''; 
@@ -167,7 +238,7 @@ async function fetchAlbumsByPage(page, limit) {
         info.classList.add('info');
 
         const img = document.createElement('img');
-        img.src = albums.imageUrl;
+        img.src = albums.images[0].url;
 
         const title = document.createElement('h2');
         title.textContent = albums.name;
@@ -196,4 +267,102 @@ async function fetchAlbumsByPage(page, limit) {
 
 function viewAlbums(albumsId) {
     window.location.href = `/selectedAlbum?id=${albumsId}`;
+}
+
+
+async function fetchPlaylistsByPage(filter, searchText, page, limit) {
+    const response = await fetch(`http://localhost:3000/chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch country playlists');
+    }
+    const data = await response.json();
+    const playlists = data.playlists.items;
+
+    const container = document.getElementById('playlist-container');
+    container.innerHTML = ''; 
+
+    playlists.forEach(playlist => {
+        const info = document.createElement('div');
+        info.classList.add('info');
+
+        const img = document.createElement('img');
+        img.src = playlist.images[0].url;
+
+        const title = document.createElement('h2');
+        title.textContent = playlist.name;
+
+        const button = document.createElement('button');
+        button.textContent = 'View Now';
+        button.addEventListener('click', function() {
+            viewPlaylist(playlist.id);
+        });
+
+        const heartIcon = document.createElement('i');
+        heartIcon.classList.add('bx', 'bxs-heart');
+
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('buttons');
+        buttonsContainer.appendChild(button);
+        buttonsContainer.appendChild(heartIcon);
+
+        info.appendChild(img);
+        info.appendChild(title);
+        info.appendChild(buttonsContainer);
+
+        container.appendChild(info);
+    });
+}
+
+function viewPlaylist(playlistId) {
+    window.location.href = `/playlist?id=${playlistId}`;
+}
+
+
+async function fetchArtistsByPage(filter, searchText, page, limit) {
+    const response = await fetch(`http://localhost:3000/chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch country Artists');
+    }
+    const data = await response.json();
+    const albums = data.artists.items;
+
+    const container = document.getElementById('albums-container');
+    container.innerHTML = ''; 
+
+    albums.forEach(album => {
+        const info = document.createElement('div');
+        info.classList.add('info');
+
+        const img = document.createElement('img');
+        img.src = album.images[0].url;
+
+        const title = document.createElement('h2');
+        title.textContent = album.name;
+
+        const button = document.createElement('button');
+        button.textContent = 'View Now';
+        button.addEventListener('click', function() {
+            viewAlbums(album.id);
+        });
+
+        const heartIcon = document.createElement('i');
+        heartIcon.classList.add('bx', 'bxs-heart');
+
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('buttons');
+        buttonsContainer.appendChild(button);
+        buttonsContainer.appendChild(heartIcon);
+
+        info.appendChild(img);
+        info.appendChild(title);
+        info.appendChild(buttonsContainer);
+
+        container.appendChild(info);
+    });
+}
+
+
+
+function viewAlbums(albumsId) {
+    window.location.href = `/selectedArtist?id=${albumsId}`;
 }
