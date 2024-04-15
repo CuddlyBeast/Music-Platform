@@ -96,9 +96,14 @@
                 </div>
 
                 <div class="search">
-                    <i class='bx bx-search' ></i>
-                    <input type="text" 
-                    placeholder="Type here to search">
+                    <i class='bx bx-search'></i>
+                    <input type="text" placeholder="Type here to search">
+                    <select id="filter">
+                        <option value="tracks">Tracks</option>
+                        <option value="playlists">Playlists</option>
+                        <option value="artists">Artists</option>
+                        <option value="albums">Albums</option>
+                    </select>
                 </div>
 
             </header>
@@ -171,5 +176,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spotify-web-api-node/5.1.1/spotify-web-api-node.min.js"></script>
     <script src="recentAlbums.js"></script>
     <script src="user.js"></script>
+    <script src="menuSidebar.js"></script>
 </body>
 </html>

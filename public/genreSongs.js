@@ -1,5 +1,3 @@
-// could also add recommendation in genres based on artists
-
 document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     const genre = params.get('genre');
@@ -78,6 +76,25 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.items').appendChild(item);
         });
     });
+
+    const searchInput = document.querySelector('.search input');
+    const filterSelect = document.getElementById('filter');
+    const searchIcon = document.querySelector('.search i.bx-search');
+
+    const handleSearch = () => {
+    const searchText = searchInput.value.trim().toLowerCase();
+    const filterValue = filterSelect.value;
+
+    search(filterValue, searchText);
+    };
+
+    searchIcon.addEventListener('click', handleSearch);
+
+    searchInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    });
 });
 
 function getArtistIds(genre) {
@@ -142,5 +159,24 @@ const fetchRandomSongs = async (artistIds) => {
     } catch (error) {
         console.error('Error fetching random songs:', error);
         return [];
+    }
+};
+
+const search = async (filter, searchText) => {
+    switch (filter) {
+        case 'tracks':
+            window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'playlists':
+            window.location.href = `/searchPlaylists?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'artists':
+            window.location.href = `/searchArtists?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'albums':
+            window.location.href = `/searchAlbums?filter=${filter}&searchText=${searchText}`;
+            break;
+        default:
+            window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
     }
 };

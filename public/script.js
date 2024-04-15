@@ -1,13 +1,3 @@
-const menuOpen = document.getElementById('menu-open');
-const menuClose = document.getElementById('menu-close');
-const sidebar = document.querySelector('.container .sidebar');
-
-
-menuOpen.addEventListener('click', () => sidebar.style.left = '0');
-
-menuClose.addEventListener('click', () => sidebar.style.left = '-100%');
-
-
 document.addEventListener('DOMContentLoaded', async function() {
     const urlParams = new URLSearchParams(window.location.search);
     
@@ -41,8 +31,42 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const data = await response.json();
 
+
+    // Target first song for trending section
+    const firstSong = data.songs[0];
+
+    const infoContainer = document.querySelector('.info');
+    const trendingContainer = document.getElementById('trending-image-rec')
+
+    const songTitle = document.createElement('h2');
+    songTitle.textContent = firstSong.title;
+
+    const songArtist = document.createElement('h4');
+    songArtist.textContent = firstSong.artist;
+
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.classList.add('buttons');
+
+    const listenButton = document.createElement('button');
+    listenButton.textContent = 'Listen Now';
+
+    const heartIcon = document.createElement('i');
+    heartIcon.classList.add('bx', 'bxs-heart');
+
+    buttonsContainer.appendChild(listenButton);
+    buttonsContainer.appendChild(heartIcon);
+
+    infoContainer.appendChild(songTitle);
+    infoContainer.appendChild(songArtist);
+    infoContainer.appendChild(buttonsContainer);
+
+    const trendingImage = document.createElement('img');
+    trendingImage.src = firstSong.albumImageUrl;
+
+    trendingContainer.appendChild(trendingImage);
+
     // Iterate over the first four songs only
-    for (let index = 0; index < 4; index++) {
+    for (let index = 1; index < 5; index++) {
         const song = data.songs[index];
 
         const track = document.createElement('div');
@@ -141,7 +165,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     searchIcon.addEventListener('click', handleSearch);
 
-    // Event listener for pressing enter
     searchInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             handleSearch();

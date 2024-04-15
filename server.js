@@ -10,7 +10,6 @@ const spotifyPlaybackRoutes= require('./spotify/playbackRoutes');
 const authRoutes = require('./routes/authRoutes');
 const playlistRoutes = require('./routes/playlistRoutes');
 const trackRoutes = require('./routes/trackRoutes');
-const interactionRoutes = require('./routes/interactionRoutes');
 
 require("dotenv").config()
 
@@ -153,7 +152,6 @@ app.use('/chill', spotifyPlaybackRoutes);
 app.use('/chill', authRoutes);
 app.use('/chill', playlistRoutes);
 app.use('/chill', trackRoutes);
-app.use('/chill', interactionRoutes);
 
 const PORT = process.env.PORT || 3000
 

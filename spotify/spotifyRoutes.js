@@ -720,6 +720,76 @@ router.get('/searchLimit', ensureAccessToken, async (req, res) => {
     }
 });
 
+router.put('/save-track/:trackId', ensureAccessToken, async (req, res) => {
+    const { trackId } = req.params;
+    try {
+        await spotifyApi.addToMySavedTracks([trackId]);
+        res.status(200).send('Track saved successfully');
+    } catch (error) {
+        console.error('Error saving track:', error);
+        res.status(500).send('Error saving track');
+    }
+});
+
+// Route to save an album to the user's library
+router.put('/save-album/:albumId', ensureAccessToken, async (req, res) => {
+    const { albumId } = req.params;
+    try {
+        await spotifyApi.addToMySavedAlbums([albumId]);
+        res.status(200).send('Album saved successfully');
+    } catch (error) {
+        console.error('Error saving album:', error);
+        res.status(500).send('Error saving album');
+    }
+});
+
+// Route to save a playlist to the user's library
+router.put('/save-playlist/:playlistId', ensureAccessToken, async (req, res) => {
+    const { playlistId } = req.params;
+    try {
+        await spotifyApi.followPlaylist(playlistId);
+        res.status(200).send('Playlist saved successfully');
+    } catch (error) {
+        console.error('Error saving playlist:', error);
+        res.status(500).send('Error saving playlist');
+    }
+});
+
+router.delete('/remove-track/:trackId', ensureAccessToken, async (req, res) => {
+    const { trackId } = req.params;
+    try {
+        await spotifyApi.removeFromMySavedTracks([trackId]);
+        res.status(200).send('Track removed successfully');
+    } catch (error) {
+        console.error('Error removing track:', error);
+        res.status(500).send('Error removing track');
+    }
+});
+
+// Route to remove an album from the user's library
+router.delete('/remove-album/:albumId', ensureAccessToken, async (req, res) => {
+    const { albumId } = req.params;
+    try {
+        await spotifyApi.removeFromMySavedAlbums([albumId]);
+        res.status(200).send('Album removed successfully');
+    } catch (error) {
+        console.error('Error removing album:', error);
+        res.status(500).send('Error removing album');
+    }
+});
+
+// Route to unfollow a playlist from the user's library
+router.delete('/unfollow-playlist/:playlistId', ensureAccessToken, async (req, res) => {
+    const { playlistId } = req.params;
+    try {
+        await spotifyApi.unfollowPlaylist(playlistId);
+        res.status(200).send('Playlist unfollowed successfully');
+    } catch (error) {
+        console.error('Error unfollowing playlist:', error);
+        res.status(500).send('Error unfollowing playlist');
+    }
+});
+
 
 module.exports = router;
 

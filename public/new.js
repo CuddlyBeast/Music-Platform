@@ -44,6 +44,25 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         paginationContainer.appendChild(nextPageButton);
 
+        const searchInput = document.querySelector('.search input');
+        const filterSelect = document.getElementById('filter');
+        const searchIcon = document.querySelector('.search i.bx-search');
+
+        const handleSearch = () => {
+        const searchText = searchInput.value.trim().toLowerCase();
+        const filterValue = filterSelect.value;
+    
+        search(filterValue, searchText);
+        };
+
+        searchIcon.addEventListener('click', handleSearch);
+
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
     } catch (error) {
         console.error('Error:', error);
     }
@@ -97,3 +116,22 @@ async function fetchPlaylistsByPage(page, limit) {
 function viewPlaylist(playlistId) {
     window.location.href = `/playlist?id=${playlistId}`;
 }
+
+const search = async (filter, searchText) => {
+    switch (filter) {
+        case 'tracks':
+            window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'playlists':
+            window.location.href = `/searchPlaylists?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'artists':
+            window.location.href = `/searchArtists?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'albums':
+            window.location.href = `/searchAlbums?filter=${filter}&searchText=${searchText}`;
+            break;
+        default:
+            window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
+    }
+};
