@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <h4>Created At: ${myPlaylist.Playlist.createdAt.slice(11, 19)} | ${myPlaylist.Playlist.createdAt.slice(0, 10)}</h4> 
                     <div class="buttons">
                         <button>Delete</button>
-                        <i class='bx bxs-heart'></i>
+                        <i class='bx bxs-check-circle' ></i>
                     </div>
                 </div>
             </div> 
@@ -54,12 +54,26 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="actions">
                     <p>${formatDuration(track.Track.durationMs)}</p>
                     <div class="icon">
-                        <i class='bx bxs-right-arrow'></i>
+                        <i class='bx bxs-heart'></i>
                     </div>
                     <i class='bx bx-x-circle'></i>
                     <i class='bx bxs-plus-square'></i>
                 </div>
             `;
+
+            const likeButton = trackItem.querySelector('.bx.bxs-heart')
+
+            likeButton.addEventListener('click', async () => {
+                const response = await fetch(`http://localhost:3000/chill/save-track/${track.Track.spotifyId}`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to follow country track on Spotify');
+                } 
+                likeButton.style.color = 'rgb(230, 3, 199)';     
+            })
+
+
 
             const removeButton = trackItem.querySelector('.bx.bx-x-circle')
 
@@ -130,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             handleSearch();
         }
     });
-    
+
     } catch (error) {
         console.error('Error:', error);
     }

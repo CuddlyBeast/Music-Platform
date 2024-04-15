@@ -53,6 +53,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     const heartIcon = document.createElement('i');
     heartIcon.classList.add('bx', 'bxs-heart');
 
+    heartIcon.addEventListener('click', async () => {
+        const response = await fetch(`http://localhost:3000/chill/save-track/${firstSong.id}`, {
+            method: 'PUT'
+        });
+        if (!response.ok) {
+            throw new Error('Failed to follow country playlist on Spotify');
+        } 
+        heartIcon.style.color = 'rgb(230, 3, 199)';     
+    })
+
     buttonsContainer.appendChild(listenButton);
     buttonsContainer.appendChild(heartIcon);
 
@@ -105,7 +115,19 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const icon = document.createElement('div');
         icon.classList.add('icon');
-        icon.innerHTML = '<i class="bx bxs-right-arrow"></i>';
+        icon.innerHTML = '<i class="bx bxs-heart"></i>';
+
+        const likeButton = icon.querySelector('.bx.bxs-heart')
+
+        likeButton.addEventListener('click', async () => {
+            const response = await fetch(`http://localhost:3000/chill/save-track/${song.id}`, {
+                method: 'PUT'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to follow country track on Spotify');
+            } 
+            likeButton.style.color = 'rgb(230, 3, 199)';     
+        })
 
         const plusIcon = document.createElement('i');
         plusIcon.classList.add('bx', 'bxs-plus-square');

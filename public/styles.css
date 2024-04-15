@@ -197,7 +197,7 @@ html, body{
     background-color: transparent;
     border: none;
     outline: none;
-    color: #fff;
+    color: #fff; 
 }
 
 .container main header .search select {
@@ -417,13 +417,13 @@ html, body{
     align-items: center;
     justify-content: center;
     background-color: #32323d;
-    padding: 6px;
+    padding: 7px;
     border: 2px solid #464748;
     border-radius: 6px;
 }
 
 .container main .playlist .music-list .items .track .actions .icon i{
-    font-size: 10px;
+    font-size: 12px;
     color: #5773ff;
 }
 

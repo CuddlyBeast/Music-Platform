@@ -9,15 +9,12 @@ document.addEventListener('DOMContentLoaded', async function() {
          }
         const playlist = await response.json();
 
-        console.log(playlist);
-
         const playlistInfo = document.querySelector('.trending');
         playlistInfo.innerHTML = `
             <div class="left">
                 <div class="info">
                     <h2>${playlist.name}</h2>
                     <h4>${playlist.description}</h4>
-                    <h5>${playlist.playCount} Plays</h5>
                     <div class="buttons">
                         <button>Follow</button>
                         <i class='bx bxs-heart'></i>
@@ -27,6 +24,17 @@ document.addEventListener('DOMContentLoaded', async function() {
             <img src="${playlist.imageUrl}">
         `;
 
+        const playlistLikeButton = playlistInfo.querySelector('.bx.bxs-heart')
+
+        playlistLikeButton.addEventListener('click', async () => {
+            const response = await fetch(`http://localhost:3000/chill/save-playlist/${playlist.id}`, {
+                method: 'PUT'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to follow country track on Spotify');
+            } 
+            playlistLikeButton.style.color = 'rgb(230, 3, 199)';     
+        })
 
         const tracksContainer = document.querySelector('.playlist .music-list .items');
         tracksContainer.innerHTML = '';
@@ -45,11 +53,23 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="actions">
                     <p>${track.duration}</p>
                     <div class="icon">
-                        <i class='bx bxs-right-arrow'></i>
+                    <i class='bx bxs-heart' ></i>
                     </div>
                     <i class='bx bxs-plus-square'></i>
                 </div>
             `;
+
+            const likeButton = trackItem.querySelector('.bx.bxs-heart')
+
+            likeButton.addEventListener('click', async () => {
+                const response = await fetch(`http://localhost:3000/chill/save-track/${track.id}`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to follow country track on Spotify');
+                } 
+                likeButton.style.color = 'rgb(230, 3, 199)';     
+            })
 
             const plusIcon = trackItem.querySelector('.bx.bxs-plus-square');
 

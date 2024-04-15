@@ -161,6 +161,7 @@ router.get('/playlists/:id', ensureAccessToken, async (req, res) => {
         const playlist = await spotifyApi.getPlaylist(playlistId);
 
         const playlistDetails = {
+            id: playlist.body.id,
             name: playlist.body.name,
             description: playlist.body.description,
             playCount: playlist.body.tracks.total,

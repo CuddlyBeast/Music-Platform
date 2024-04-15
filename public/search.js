@@ -55,7 +55,19 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             const icon = document.createElement('div');
             icon.classList.add('icon');
-            icon.innerHTML = '<i class="bx bxs-right-arrow"></i>';
+            icon.innerHTML = '<i class="bx bxs-heart"></i>';
+
+            const likeButton = icon.querySelector('.bx.bxs-heart')
+    
+            likeButton.addEventListener('click', async () => {
+                const response = await fetch(`http://localhost:3000/chill/save-track/${track.id}`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to follow country track on Spotify');
+                } 
+                likeButton.style.color = 'rgb(230, 3, 199)';     
+            })
 
             const plusIcon = document.createElement('i');
             plusIcon.classList.add('bx', 'bxs-plus-square');
@@ -206,6 +218,25 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
 
+    const searchInput = document.querySelector('.search input');
+    const filterSelect = document.getElementById('filter');
+    const searchIcon = document.querySelector('.search i.bx-search');
+
+    const handleSearch = () => {
+    const searchText = searchInput.value.trim().toLowerCase();
+    const filterValue = filterSelect.value;
+
+    search(filterValue, searchText);
+    };
+
+    searchIcon.addEventListener('click', handleSearch);
+
+    searchInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    });
+
     } catch (error) {
         console.error('Error displaying searched items:', error);
     }
@@ -251,6 +282,16 @@ async function fetchAlbumsByPage(filter, searchText, page, limit) {
 
         const heartIcon = document.createElement('i');
         heartIcon.classList.add('bx', 'bxs-heart');
+
+        heartIcon.addEventListener('click', async () => {
+            const response = await fetch(`http://localhost:3000/chill/save-album/${albums.id}`, {
+                method: 'PUT'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to follow country album on Spotify');
+            } 
+            heartIcon.style.color = 'rgb(230, 3, 199)';     
+        })
 
         const buttonsContainer = document.createElement('div');
         buttonsContainer.classList.add('buttons');
@@ -300,6 +341,16 @@ async function fetchPlaylistsByPage(filter, searchText, page, limit) {
         const heartIcon = document.createElement('i');
         heartIcon.classList.add('bx', 'bxs-heart');
 
+        heartIcon.addEventListener('click', async () => {
+            const response = await fetch(`http://localhost:3000/chill/save-playlist/${playlist.id}`, {
+                method: 'PUT'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to follow country playlist on Spotify');
+            } 
+            heartIcon.style.color = 'rgb(230, 3, 199)';     
+        })
+
         const buttonsContainer = document.createElement('div');
         buttonsContainer.classList.add('buttons');
         buttonsContainer.appendChild(button);
@@ -324,29 +375,39 @@ async function fetchArtistsByPage(filter, searchText, page, limit) {
         throw new Error('Failed to fetch country Artists');
     }
     const data = await response.json();
-    const albums = data.artists.items;
+    const artists = data.artists.items;
 
     const container = document.getElementById('albums-container');
     container.innerHTML = ''; 
 
-    albums.forEach(album => {
+    artists.forEach(artist => {
         const info = document.createElement('div');
         info.classList.add('info');
 
         const img = document.createElement('img');
-        img.src = album.images[0].url;
+        img.src = artist.images[0].url;
 
         const title = document.createElement('h2');
-        title.textContent = album.name;
+        title.textContent = artist.name;
 
         const button = document.createElement('button');
         button.textContent = 'View Now';
         button.addEventListener('click', function() {
-            viewAlbums(album.id);
+            viewartist(artist.id);
         });
 
         const heartIcon = document.createElement('i');
         heartIcon.classList.add('bx', 'bxs-heart');
+
+        heartIcon.addEventListener('click', async () => {
+            const response = await fetch(`http://localhost:3000/chill/save-artist/${artist.id}`, {
+                method: 'PUT'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to follow country artist on Spotify');
+            } 
+            heartIcon.style.color = 'rgb(230, 3, 199)';     
+        })
 
         const buttonsContainer = document.createElement('div');
         buttonsContainer.classList.add('buttons');
@@ -363,6 +424,25 @@ async function fetchArtistsByPage(filter, searchText, page, limit) {
 
 
 
-function viewAlbums(albumsId) {
-    window.location.href = `/selectedArtist?id=${albumsId}`;
+function viewArtist(artistId) {
+    window.location.href = `/selectedArtist?id=${artistId}`;
 }
+
+const search = async (filter, searchText) => {
+    switch (filter) {
+        case 'tracks':
+            window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'playlists':
+            window.location.href = `/searchPlaylists?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'artists':
+            window.location.href = `/searchArtists?filter=${filter}&searchText=${searchText}`;
+            break;
+        case 'albums':
+            window.location.href = `/searchAlbums?filter=${filter}&searchText=${searchText}`;
+            break;
+        default:
+            window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
+    }
+};

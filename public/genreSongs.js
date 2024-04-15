@@ -43,7 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const icon = document.createElement('div');
             icon.classList.add('icon');
-            icon.innerHTML = '<i class="bx bxs-right-arrow"></i>';
+            icon.innerHTML = '<i class="bx bxs-heart"></i>';
+
+            const likeButton = icon.querySelector('.bx.bxs-heart')
+    
+            likeButton.addEventListener('click', async () => {
+                const response = await fetch(`http://localhost:3000/chill/save-track/${song.id}`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to follow country track on Spotify');
+                } 
+                likeButton.style.color = 'rgb(230, 3, 199)';     
+            })
 
             const plusIcon = document.createElement('i');
             plusIcon.classList.add('bx', 'bxs-plus-square');

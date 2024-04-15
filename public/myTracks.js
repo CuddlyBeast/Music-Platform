@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             const icon = document.createElement('div');
             icon.classList.add('icon');
-            icon.innerHTML = '<i class="bx bxs-right-arrow"></i>';
+            icon.innerHTML = '<i class="bx bxs-check-circle"></i>';
 
             const plusIcon = document.createElement('i');
             plusIcon.classList.add('bx', 'bxs-plus-square');

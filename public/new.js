@@ -100,6 +100,16 @@ async function fetchPlaylistsByPage(page, limit) {
         const heartIcon = document.createElement('i');
         heartIcon.classList.add('bx', 'bxs-heart');
 
+        heartIcon.addEventListener('click', async () => {
+            const response = await fetch(`http://localhost:3000/chill/save-playlist/${playlist.id}`, {
+                method: 'PUT'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to follow country playlist on Spotify');
+            } 
+            heartIcon.style.color = 'rgb(230, 3, 199)';     
+        })
+
         const buttonsContainer = document.createElement('div');
         buttonsContainer.classList.add('buttons');
         buttonsContainer.appendChild(button);

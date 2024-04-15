@@ -99,7 +99,7 @@ async function fetchPlaylistsByPage(page, limit) {
         });
 
         const heartIcon = document.createElement('i');
-        heartIcon.classList.add('bx', 'bxs-heart');
+        heartIcon.classList.add('bx', 'bxs-check-circle');
 
         const buttonsContainer = document.createElement('div');
         buttonsContainer.classList.add('buttons');

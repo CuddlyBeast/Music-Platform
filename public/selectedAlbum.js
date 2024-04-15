@@ -27,6 +27,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             <img src="${albums.images[0].url}">
         `;
 
+        const albumLikeButton = albumsInfo.querySelector('.bx.bxs-heart')
+
+        albumLikeButton.addEventListener('click', async () => {
+            const response = await fetch(`http://localhost:3000/chill/save-album/${albums.id}`, {
+                method: 'PUT'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to follow country album on Spotify');
+            } 
+            albumLikeButton.style.color = 'rgb(230, 3, 199)';     
+        })
+
 
         const tracksContainer = document.querySelector('.playlist .music-list .items');
         tracksContainer.innerHTML = '';
@@ -44,12 +56,23 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="actions">
                     <p>${track.duration}</p>
                     <div class="icon">
-                        <i class='bx bxs-right-arrow'></i>
+                        <i class='bx bxs-heart'></i>
                     </div>
                     <i class='bx bxs-plus-square'></i>
                 </div>
             `;
 
+            const likeButton = trackItem.querySelector('.bx.bxs-heart')
+
+            likeButton.addEventListener('click', async () => {
+                const response = await fetch(`http://localhost:3000/chill/save-track/${track.id}`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to follow country track on Spotify');
+                } 
+                likeButton.style.color = 'rgb(230, 3, 199)';     
+            })
             
             const plusIcon = trackItem.querySelector('.bx.bxs-plus-square');
 
@@ -84,16 +107,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         const filterValue = filterSelect.value;
     
         search(filterValue, searchText);
-    };
+        };
 
-    searchIcon.addEventListener('click', handleSearch);
+        searchIcon.addEventListener('click', handleSearch);
 
-    searchInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            handleSearch();
-        }
-    });
-    
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
     } catch (error) {
         console.error('Error:', error);
     }
