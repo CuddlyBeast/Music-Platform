@@ -72,7 +72,7 @@ router.put("/personalPlaylist/:id", authenticateUser, async (req, res) => {
     }
 });
 
-router.delete("/playlists/:playlistId", authenticateUser, async (req, res) => {
+router.delete("/playlist/:playlistId", authenticateUser, async (req, res) => {
     try {
         const { playlistId } = req.params;
         const userId = req.user.id;

@@ -98,13 +98,23 @@ async function fetchPlaylistsByPage(page, limit) {
             viewPlaylist(playlist.id);
         });
 
-        const heartIcon = document.createElement('i');
-        heartIcon.classList.add('bx', 'bxs-check-circle');
+        const deleteIcon = document.createElement('i');
+        deleteIcon.classList.add('bx', 'bx-x-circle');
+
+        deleteIcon.addEventListener('click', async () => {
+            const response = await fetch(`http://localhost:3000/chill/remove-playlist/${playlist.id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to delete country playlist on Spotify');
+            }   
+            window.location.reload() 
+        })
 
         const buttonsContainer = document.createElement('div');
         buttonsContainer.classList.add('buttons');
         buttonsContainer.appendChild(button);
-        buttonsContainer.appendChild(heartIcon);
+        buttonsContainer.appendChild(deleteIcon);
 
         info.appendChild(img);
         info.appendChild(title);

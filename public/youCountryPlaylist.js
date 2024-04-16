@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', async function() {
          const urlParams = new URLSearchParams(window.location.search);
          const playlistId = urlParams.get('id');
 
-         console.log(playlistId)
-
          const token = localStorage.getItem('token');
  
          const response = await fetch(`http://localhost:3000/chill/personalPlaylist/${playlistId}`, {
@@ -36,6 +34,27 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div> 
             <img src="${myPlaylist.Playlist.image}">
         `;
+
+        const deleteButton = document.querySelector('.buttons button')
+
+        deleteButton.addEventListener('click', async () => {
+            const confirmed = window.confirm('Are you sure you want to delete this playlist?');
+
+            if (confirmed) {
+                const response = await fetch(`http://localhost:3000/chill/playlist/${playlistId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete YouCountry playlist');
+                }
+
+                window.location.href = '/';
+            }
+        })
 
         const tracksContainer = document.querySelector('.playlist .music-list .items');
         tracksContainer.innerHTML = '';

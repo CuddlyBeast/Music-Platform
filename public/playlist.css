@@ -238,6 +238,10 @@ html, body{
     border-radius: 50%;
 }
 
+.container main .trending .left .info .buttons .bxs-check-circle{
+    cursor: default;
+}
+
 .container main .trending img{
     width: 300px;
     height: 200px;

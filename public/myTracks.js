@@ -44,9 +44,20 @@ document.addEventListener('DOMContentLoaded', async function() {
             const duration = document.createElement('p');
             duration.textContent = formatDuration(track.track.duration_ms); 
 
-            const icon = document.createElement('div');
-            icon.classList.add('icon');
-            icon.innerHTML = '<i class="bx bxs-check-circle"></i>';
+            const deleteIcon = document.createElement('div');
+            deleteIcon.innerHTML = '<i class="bx bx-x-circle"></i>';
+            const deleteIconElement = deleteIcon.querySelector('i');
+            deleteIconElement.style.color = '#5773ff';
+
+            deleteIcon.addEventListener('click', async () => {
+                const response = await fetch(`http://localhost:3000/chill/remove-track/${track.track.id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to delete country track on Spotify');
+                }   
+                window.location.reload() 
+            })
 
             const plusIcon = document.createElement('i');
             plusIcon.classList.add('bx', 'bxs-plus-square');
@@ -70,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
 
             actions.appendChild(duration);
-            actions.appendChild(icon);
+            actions.appendChild(deleteIcon);
             actions.appendChild(plusIcon);
 
             item.appendChild(info);

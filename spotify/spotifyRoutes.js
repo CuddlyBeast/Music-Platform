@@ -779,8 +779,8 @@ router.delete('/remove-album/:albumId', ensureAccessToken, async (req, res) => {
     }
 });
 
-// Route to unfollow a playlist from the user's library
-router.delete('/unfollow-playlist/:playlistId', ensureAccessToken, async (req, res) => {
+// Route to remove a playlist from the user's library
+router.delete('/remove-playlist/:playlistId', ensureAccessToken, async (req, res) => {
     const { playlistId } = req.params;
     try {
         await spotifyApi.unfollowPlaylist(playlistId);
