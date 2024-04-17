@@ -12,13 +12,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.error('Error redirecting for authorization:', error);
         }
     } else {
-        try {
-            const trackId = '2a5VluIESm1JP4Qwvo02H8';
-            const data = await fetchSongData(trackId, accessToken);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching song data:', error);
-        }
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
     }
 
 
@@ -81,6 +76,26 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const track = document.createElement('div');
         track.classList.add('track');
+
+        track.addEventListener('click', (event) => {
+            // Check if the click target is not one of the icon buttons
+            if (!event.target.closest('.icon')) {
+                // Trigger the action to start playing the track
+                const albumImage = document.querySelector('.album-image');
+                const songTitle = document.querySelector('.song-title');
+                const songArtist = document.querySelector('.song-artist');
+                const albumName = document.querySelector('.album-name');
+    
+                albumImage.src = song.albumImageUrl;
+                songTitle.textContent = song.title;
+                songArtist.textContent = song.artist;
+                albumName.textContent = song.albumTitle;
+
+                // localStorage.setItem('songUri', song.uri)
+
+                startPlayback(song.uri); 
+            }
+        });
 
         const info = document.createElement('div');
         info.classList.add('info');
@@ -196,22 +211,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 
-
-const fetchSongData = async (trackId, accessToken) => {
-    try {
-        const response = await fetch(`http://localhost:3000/chill/tracks/${trackId}`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}` 
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching song data:', error);
-        return null;
-    }
-};
-
 const search = async (filter, searchText) => {
         switch (filter) {
             case 'tracks':
@@ -230,3 +229,28 @@ const search = async (filter, searchText) => {
                 window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
         }
 };
+
+
+
+// const startPlayback = async (trackUri) => {
+//     try {
+//         const accessToken = localStorage.getItem('accessToken');
+//         const response = await fetch('http://localhost:3000/chill/playback/play', {
+//             method: 'POST',
+//             headers: {
+//                 'Authorization': `Bearer ${accessToken}`,
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({ trackUri, accessToken })
+//         });
+
+//         if (!response.ok) {
+//             throw new Error('Failed to start playback');
+//         }
+
+//         const data = await response.json();
+//         console.log(data.message);
+//     } catch (error) {
+//         console.error('Error starting playback:', error);
+//     }
+// };

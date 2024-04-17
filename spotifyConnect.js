@@ -15,11 +15,6 @@ async function connectToSpotifyAPI() {
     // Set access token to be used for subsequent requests
     spotifyApi.setAccessToken(accessToken);
 
-    // Make requests to Spotify API
-    const trackData = await spotifyApi.getTrack('2TpxZ7JUBn3uw46aR7qd6V');
-
-    // Handle response data
-    console.log('Track:', trackData.body);
   } catch (error) {
     // Handle authentication or request errors
     console.error('Error:', error);

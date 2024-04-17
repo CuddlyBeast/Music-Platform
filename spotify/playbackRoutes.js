@@ -4,8 +4,7 @@ const axios = require('axios');
 
 router.post('/playback/play', async (req, res) => {
     try {
-        const { trackUri } = req.body; // Assuming you provide the track URI in the request body
-        const accessToken = req.headers.authorization.split(' ')[1]; // Extract access token from request header
+        const { trackUri, accessToken } = req.body; 
 
         await axios({
             method: 'put',
@@ -15,7 +14,7 @@ router.post('/playback/play', async (req, res) => {
                 'Content-Type': 'application/json'
             },
             data: {
-                uris: [trackUri] // Pass the track URI here
+                uris: [trackUri] 
             }
         });
 

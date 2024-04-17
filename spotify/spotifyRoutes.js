@@ -59,10 +59,12 @@ router.get('/playlists/top-country-songs', ensureAccessToken, async (req, res) =
         });
 
         const topCountrySongs = topTracks.body.tracks.map(item => ({
+            uri: item.uri,
             id: item.id,
             title: item.name,
             artist: item.artists.map(artist => artist.name).join(', '),
             albumImageUrl: item.album.images[0].url,
+            albumTitle: item.album.name,
             duration: formatDuration(item.duration_ms)
         }));
 
