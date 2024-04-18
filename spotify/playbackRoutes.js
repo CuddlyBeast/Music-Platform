@@ -1,21 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
+const { spotifyApi } = require('./authRoutes');
 
 router.post('/playback/play', async (req, res) => {
     try {
-        const { trackUri, accessToken } = req.body; 
+        const { trackUri , deviceId } = req.body;
+        const accessToken = req.headers.authorization.split(' ')[1];
+        spotifyApi.setAccessToken(accessToken);
 
-        await axios({
-            method: 'put',
-            url: 'https://api.spotify.com/v1/me/player/play',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            },
-            data: {
-                uris: [trackUri] 
-            }
+        await spotifyApi.play({
+            uris: [trackUri],
+            device_id: deviceId
         });
 
         res.status(200).json({ message: 'Playback started successfully.' });
@@ -28,16 +23,7 @@ router.post('/playback/play', async (req, res) => {
 
 router.post('/playback/pause', async (req, res) => {
     try {
-        const accessToken = req.headers.authorization.split(' ')[1]; // Extract access token from request header
-
-        await axios({
-            method: 'put',
-            url: 'https://api.spotify.com/v1/me/player/pause',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        await spotifyApi.pause();
 
         res.status(200).json({ message: 'Playback paused successfully.' });
     } catch (error) {
@@ -46,18 +32,9 @@ router.post('/playback/pause', async (req, res) => {
     }
 });
 
-
 router.post('/playback/next', async (req, res) => {
     try {
-        const accessToken = req.headers.authorization.split(' ')[1]; // Extract access token from request header
-
-        await axios({
-            method: 'post',
-            url: 'https://api.spotify.com/v1/me/player/next',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        });
+        await spotifyApi.skipToNext();
 
         res.status(200).json({ message: 'Skipped to the next track successfully.' });
     } catch (error) {
@@ -66,18 +43,9 @@ router.post('/playback/next', async (req, res) => {
     }
 });
 
-
 router.post('/playback/previous', async (req, res) => {
     try {
-        const accessToken = req.headers.authorization.split(' ')[1]; // Extract access token from request header
-
-        await axios({
-            method: 'post',
-            url: 'https://api.spotify.com/v1/me/player/previous',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        });
+        await spotifyApi.skipToPrevious();
 
         res.status(200).json({ message: 'Skipped to the previous track successfully.' });
     } catch (error) {

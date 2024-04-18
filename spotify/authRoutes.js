@@ -13,7 +13,7 @@ const spotifyApi = new SpotifyWebApi({
 router.get('/auth', (req, res) => {
     const clientId = '1e69079ae7904703a2c03ecab6c95f99';
     const redirectUri = 'http://localhost:3000/chill/callback'; 
-    const scopes = ['user-read-private', 'user-read-email', 'user-read-recently-played', 'user-top-read', 'user-modify-playback-state', 'playlist-read-private', 'user-library-read', 'user-library-modify', 'user-follow-read', 'playlist-modify-public', 'playlist-modify-private' ]; // Specify the required scopes
+    const scopes = ['user-read-private', 'user-read-email', 'user-read-recently-played', 'user-top-read', 'user-modify-playback-state', 'playlist-read-private', 'user-library-read', 'user-library-modify', 'user-follow-read', 'playlist-modify-public', 'playlist-modify-private', 'streaming', 'user-read-playback-state' ]; // Specify the required scopes
     const spotifyAuthUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}`;
 
     res.redirect(spotifyAuthUrl);

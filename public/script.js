@@ -91,8 +91,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 songArtist.textContent = song.artist;
                 albumName.textContent = song.albumTitle;
 
-                // localStorage.setItem('songUri', song.uri)
-
                 startPlayback(song.uri); 
             }
         });
@@ -230,27 +228,3 @@ const search = async (filter, searchText) => {
         }
 };
 
-
-
-// const startPlayback = async (trackUri) => {
-//     try {
-//         const accessToken = localStorage.getItem('accessToken');
-//         const response = await fetch('http://localhost:3000/chill/playback/play', {
-//             method: 'POST',
-//             headers: {
-//                 'Authorization': `Bearer ${accessToken}`,
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({ trackUri, accessToken })
-//         });
-
-//         if (!response.ok) {
-//             throw new Error('Failed to start playback');
-//         }
-
-//         const data = await response.json();
-//         console.log(data.message);
-//     } catch (error) {
-//         console.error('Error starting playback:', error);
-//     }
-// };
