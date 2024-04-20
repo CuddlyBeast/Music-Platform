@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const urlParams = new URLSearchParams(window.location.search);
     
-    // The access token and refresh token are successful retrieved
     const accessToken = urlParams.get('access_token');
     const refreshToken = urlParams.get('refresh_token');
 
@@ -72,28 +71,90 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Iterate over the first four songs only
     for (let index = 1; index < 5; index++) {
+        // Initialize current track index
+        let currentTrackIndex = 0;
+
+        // Function to update the UI with track information
+        const updateUI = (track) => {
+            const albumImage = document.querySelector('.album-image');
+            const songTitle = document.querySelector('.song-title');
+            const songArtist = document.querySelector('.song-artist');
+            const albumName = document.querySelector('.album-name');
+
+            albumImage.src = track.albumImageUrl;
+            songTitle.textContent = track.title;
+            songArtist.textContent = track.artist;
+            albumName.textContent = track.albumTitle;
+        };
+
+
+        updateUI(data.songs[currentTrackIndex]);
+        
         const song = data.songs[index];
+
+        console.log('song', song)
 
         const track = document.createElement('div');
         track.classList.add('track');
 
-        track.addEventListener('click', (event) => {
+        track.addEventListener('click', async (event) => {
             // Check if the click target is not one of the icon buttons
             if (!event.target.closest('.icon')) {
-                // Trigger the action to start playing the track
-                const albumImage = document.querySelector('.album-image');
-                const songTitle = document.querySelector('.song-title');
-                const songArtist = document.querySelector('.song-artist');
-                const albumName = document.querySelector('.album-name');
-    
-                albumImage.src = song.albumImageUrl;
-                songTitle.textContent = song.title;
-                songArtist.textContent = song.artist;
-                albumName.textContent = song.albumTitle;
+                currentTrackIndex = index;
+                console.log('current track', currentTrackIndex)
+                updateUI(song)
 
-                startPlayback(song.uri); 
+                await startPlayback(song.uri); 
             }
+
+            const nextButton = document.querySelector('.next-song');
+            const previousButton = document.querySelector('.previous-song');
+
+            nextButton.addEventListener('click', async () => {
+                try {
+                currentTrackIndex = (currentTrackIndex + 1) % data.songs.length;
+
+                const nextSong = data.songs[currentTrackIndex]
+                updateUI(nextSong)
+                
+                await startPlayback(nextSong.uri);
+                } catch (error) {
+                    console.error('Error starting playback:', error);
+                }
+            });
+        
+            previousButton.addEventListener('click', async () => {
+                try {
+                currentTrackIndex = (currentTrackIndex - 1 + data.songs.length) % data.songs.length;
+
+                console.log('previous track', currentTrackIndex)
+
+                const previousSong = data.songs[currentTrackIndex];
+                updateUI(previousSong)
+    
+                await startPlayback(previousSong.uri);
+                } catch (error) {
+                    console.error('Error starting playback:', error);
+                }
+            });
+        
         });
+
+        const playButton = document.querySelector('.play-button');
+        const pauseButton = document.querySelector('.pause-button');
+
+        playButton.addEventListener('click', function() {
+            playButton.style.display = 'none';
+            pauseButton.style.display = 'inline-block';
+            resumePlayback();
+        });
+
+        pauseButton.addEventListener('click', function() {
+            pauseButton.style.display = 'none';
+            playButton.style.display = 'inline-block';
+            pausePlayback();
+        });
+
 
         const info = document.createElement('div');
         info.classList.add('info');
@@ -227,4 +288,5 @@ const search = async (filter, searchText) => {
                 window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
         }
 };
+
 

@@ -577,6 +577,16 @@ html, body{
     background-color: #fff;
     color: #5773ff;
     border-radius: 18px;
+    display: none;
+}
+
+.container .right-section .music-player .player-actions .buttons .pause-button{
+    /* display: none; */
+    font-size: 30px;
+    padding: 11px;
+    background-color: #fff;
+    color: #5773ff;
+    border-radius: 18px;
 }
 
 .container .right-section .music-player .player-actions .lyrics{

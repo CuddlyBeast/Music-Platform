@@ -32,6 +32,28 @@ router.post('/playback/pause', async (req, res) => {
     }
 });
 
+router.post('/playback/resume', async (req, res) => {
+    try {
+        await spotifyApi.play();
+        res.status(200).json({ message: 'Playback resumed successfully.' });
+    } catch (error) {
+        console.error('Error resuming playback:', error);
+        res.status(500).json({ error: 'Resume playback failed. Please try again.' });
+    }
+});
+
+router.get('/playback/state', async (req, res) => {
+    try {
+        const { body: playbackState } = await spotifyApi.getMyCurrentPlaybackState();
+
+        res.status(200).json({ state: playbackState });
+    } catch (error) {
+        console.error('Error fetching current playback state:', error);
+        res.status(500).json({ error: 'Failed to fetch current playback state' });
+    }
+});
+
+
 router.post('/playback/next', async (req, res) => {
     try {
         await spotifyApi.skipToNext();
