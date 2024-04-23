@@ -490,6 +490,11 @@ html, body{
     margin-bottom: 30px;
 }
 
+.container .right-section .music-player .header i,
+.container .right-section .music-player .player-actions .lyrics i{
+    cursor: default;
+}
+
 .container .right-section .music-player .song-info{
     display: flex;
     flex-direction: column;

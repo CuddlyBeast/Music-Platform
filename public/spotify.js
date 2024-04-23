@@ -2,6 +2,10 @@ let deviceId = null
 let timer = null; 
 let startTime = null;
 let lastPercentage = 0;
+let repeatMode = 'off'; // Possible values: 'off', 'track', 'playlist'
+let isShuffleEnabled = false;
+let modifiedData = null; 
+
 
     window.onSpotifyWebPlaybackSDKReady = () => {
         const accessToken = localStorage.getItem('accessToken')
@@ -70,7 +74,7 @@ function formatDuration(duration_ms) {
 }
 
 
-window.startPlayback = async (trackUri) => {
+window.startPlayback = async (trackUri, trackData) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
@@ -125,6 +129,7 @@ function updateTimer(duration, paused) {
 
         if (paused) {
             percentage = lastPercentage;
+            clearInterval(timer) 
         } else {
             percentage = (elapsedTime / duration) * 100;
             lastPercentage = percentage; 
@@ -132,8 +137,9 @@ function updateTimer(duration, paused) {
 
         progressCircle.style.left = `calc(${percentage}% - 5px)`;
 
-        if (currentSeconds >= duration / 1000) {
-            clearInterval(timer);
+        if (!paused && currentSeconds >= Math.floor(duration / 1000)) {
+            console.log('Timer reached the end of the track. Calling playNextTrack...');
+            playNextTrack();       
         }
     }, 1000); 
 
@@ -197,6 +203,253 @@ window.resumePlayback = async () => {
     }
 }
 
+async function getCurrentState() {
+    try {
+        const response = await fetch('http://localhost:3000/chill/playback/state', {
+            method: 'GET'
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data.state;
+        } else {
+            throw new Error('Failed to fetch current playback state');
+        }
+    } catch (error) {
+        console.error('Error fetching current playback state:', error);
+        return null;
+    }
+}
+
+const seekPlayback = async (positionMs) => {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+
+        if (!accessToken || !refreshToken) {
+            throw new Error('Access token or refresh token not available');
+        }
+
+        if (!deviceId) {
+            throw new Error('Device ID is not available');
+        }
+
+        const response = await fetch('http://localhost:3000/chill/playback/seek', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ positionMs, deviceId })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to seek playback');
+        }
+
+        const data = await response.json();
+        console.log(data.message);
+    } catch (error) {
+        console.error('Error seeking playback:', error);
+    }
+};
+
+window.seekProgress = async (positionMs) => {
+    const currentTimeElement = document.querySelector('.current-time');
+    const progressCircle = document.querySelector('.progress-circle');
+    const duration = parseInt(document.querySelector('.total-time').textContent.split(':').reduce((acc, time) => (60 * acc) + +time, 0)); 
+
+    // Calculate percentage based on the seeked position
+    const percentage = (positionMs / duration) * 100;
+
+    // Update the position of the progress circle
+    progressCircle.style.left = `calc(${percentage}% - 5px)`;
+
+    // Update the current time element to match the seeked position
+    currentTimeElement.textContent = formatDuration(positionMs);
+
+    const state = await getCurrentState();
+
+    const trackPostitionMs = Math.floor(state.item.duration_ms * (percentage / 100))
+
+    seekPlayback(trackPostitionMs)
+}
+
+
+window.toggleShuffle = () => {
+    isShuffleEnabled = !isShuffleEnabled;
+    // Update UI to reflect shuffle state
+    const shuffleButton = document.getElementById('shuffle-button');
+    shuffleButton.style.color = isShuffleEnabled ? 'blue' : 'white';
+};
+
+const playNextTrack = async () => {
+    let nextIndex;
+    let currentTrackIndex = parseInt(localStorage.getItem('currentTrackIndex'));
+
+    if (!modifiedData || !modifiedData.songs) {
+        console.error('Modified data is null or songs array is missing.');
+        return;
+    }
+
+    if (isShuffleEnabled) {
+        // Generate a random index within the playlist range
+        nextIndex = Math.floor(Math.random() * modifiedData.songs.length);
+    } else {
+        // Increment index to play the next track sequentially
+        nextIndex = currentTrackIndex + 1;
+    }
+
+    localStorage.setItem('currentTrackIndex', nextIndex);
+
+    console.log(isShuffleEnabled)
+    // Update currentTrackIndex
+    currentTrackIndex = nextIndex;
+    console.log(currentTrackIndex)
+
+    // Play the next track
+    console.log('uri track', modifiedData.songs[currentTrackIndex].uri)
+    startPlayback(modifiedData.songs[currentTrackIndex].uri);
+    updateUI(modifiedData.songs[currentTrackIndex])
+};
+
+const handleTrackEnd = () => {
+    let currentTrackIndex = parseInt(localStorage.getItem('currentTrackIndex'));
+    // Check repeat mode
+    switch (repeatMode) {
+        case 'off':
+            // Automatically load and play the next track
+            playNextTrack();
+            break;
+        case 'track':
+            // Replay the current track
+            startPlayback(modifiedData.songs[currentTrackIndex].uri);
+            break;
+        case 'playlist':
+            // If end of playlist is reached, stop playback or loop based on application logic
+            if (currentTrackIndex === playlist.length - 1) {
+                // Handle end of playlist based on application logic
+            } else {
+                // Automatically load and play the next track
+                playNextTrack();
+            }
+            break;
+        default:
+            break;
+    }
+};
+
+const toggleRepeat = () => {
+    const repeatButton = document.getElementById('repeat-button');
+};
+
+const preloadNextData = async (trackData) => {
+    try {
+        modifiedData = { ...trackData };
+
+    } catch (error) {
+        console.error('Error preloading next data:', error);
+    }
+};
+
+
+
+
+const updateUI = (track) => {
+    const albumImage = document.querySelector('.album-image');
+    const songTitle = document.querySelector('.song-title');
+    const songArtist = document.querySelector('.song-artist');
+    const albumName = document.querySelector('.album-name');
+    
+    albumImage.src = track.albumImageUrl;
+    songTitle.textContent = track.title;
+    songArtist.textContent = track.artist;
+    albumName.textContent = track.albumTitle;
+    };
+    
+
+
+// window.toggleShuffle = async () => {
+//     try {
+//         const accessToken = localStorage.getItem('accessToken');
+
+//         if (!accessToken) {
+//             throw new Error('Access token not available');
+//         }
+
+//         const state = await getCurrentState();
+//         const currentState = state.shuffle_state;
+
+//         console.log('state it do be', state)
+
+//         const response = await fetch(`http://localhost:3000/chill/playback/shuffle?state=${currentState}`, {
+//             method: 'PUT',
+//             headers: {
+//                 'Authorization': `Bearer ${accessToken}`,
+//                 'Content-Type': 'application/json'
+//             }
+//         });
+
+//         if (!response.ok) {
+//             throw new Error('Failed to toggle shuffle');
+//         }
+
+//         const newState = !currentState;
+
+//         const shuffleButton = document.getElementById('shuffle-button');
+//         if (newState) {
+//             shuffleButton.style.color = 'blue';
+//         } else {
+//             shuffleButton.style.color = 'black';
+//         }
+
+//         const data = await response.json();
+//         console.log(data.message);
+//     } catch (error) {
+//         console.error('Error toggling shuffle:', error);
+//     }
+// };
+
+// window.toggleRepeat = async () => {
+//     try {
+//         const accessToken = localStorage.getItem('accessToken');
+
+//         if (!accessToken) {
+//             throw new Error('Access token not available');
+//         }
+
+//         const state = await getCurrentState();
+//         const currentState = state.repeat_state;
+
+//         const response = await fetch(`http://localhost:3000/chill/playback/repeat?state=${currentState}`, {
+//             method: 'PUT',
+//             headers: {
+//                 'Authorization': `Bearer ${accessToken}`,
+//                 'Content-Type': 'application/json'
+//             }
+//         });
+
+//         if (!response.ok) {
+//             throw new Error('Failed to toggle repeat');
+//         }
+
+
+//         const newState = !currentState;
+
+//         const repeatButton = document.getElementById('repeat-button');
+//         if (newState) {
+//             repeatButton.style.color = 'blue';
+//         } else {
+//             repeatButton.style.color = 'black';
+//         }
+
+//         const data = await response.json();
+//         console.log(data.message);
+//         console.log(state)
+//     } catch (error) {
+//         console.error('Error toggling repeat:', error);
+//     }
+// };
+
 // window.nextSongPlayback = async () => {
 //     try {
 //         const response = await fetch('http://localhost:3000/chill/playback/next', {
@@ -228,20 +481,3 @@ window.resumePlayback = async () => {
 //         console.error('Error resuming playback:', error);
 //     }
 // }
-
-async function getCurrentState() {
-    try {
-        const response = await fetch('http://localhost:3000/chill/playback/state', {
-            method: 'GET'
-        });
-        if (response.ok) {
-            const data = await response.json();
-            return data.state;
-        } else {
-            throw new Error('Failed to fetch current playback state');
-        }
-    } catch (error) {
-        console.error('Error fetching current playback state:', error);
-        return null;
-    }
-}

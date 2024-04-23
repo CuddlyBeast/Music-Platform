@@ -76,5 +76,51 @@ router.post('/playback/previous', async (req, res) => {
     }
 });
 
+router.post('/playback/seek', async (req, res) => {
+    try {
+        const { positionMs, deviceId } = req.body;
+        const accessToken = req.headers.authorization.split(' ')[1];
+        spotifyApi.setAccessToken(accessToken);
+
+        await spotifyApi.seek(positionMs, { device_id: deviceId });
+
+        res.status(200).json({ message: 'Seek operation successful.' });
+    } catch (error) {
+        console.error('Error seeking playback:', error);
+        res.status(500).json({ error: 'Seek operation failed. Please try again.' });
+    }
+});
+
+router.put('/playback/shuffle', async (req, res) => {
+    try {
+        const { state } = req.query;
+        const accessToken = req.headers.authorization.split(' ')[1];
+        spotifyApi.setAccessToken(accessToken);
+
+        await spotifyApi.setShuffle(state === 'true', {});
+
+        res.status(200).json({ message: 'Shuffle mode updated successfully.' });
+    } catch (error) {
+        console.error('Error updating shuffle mode:', error);
+        res.status(500).json({ error: 'Failed to update shuffle mode. Please try again.' });
+    }
+});
+
+// Route for setting repeat mode
+router.put('/playback/repeat', async (req, res) => {
+    try {
+        const { state } = req.query;
+        const accessToken = req.headers.authorization.split(' ')[1];
+        spotifyApi.setAccessToken(accessToken);
+
+        await spotifyApi.setRepeat(state, {});
+
+        res.status(200).json({ message: 'Repeat mode updated successfully.' });
+    } catch (error) {
+        console.error('Error updating repeat mode:', error);
+        res.status(500).json({ error: 'Failed to update repeat mode. Please try again.' });
+    }
+});
+
 
 module.exports = router;

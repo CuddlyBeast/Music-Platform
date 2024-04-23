@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const data = await response.json();
 
+    preloadNextData(data);
 
     // Target first song for trending section
     const firstSong = data.songs[0];
@@ -69,30 +70,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     trendingContainer.appendChild(trendingImage);
 
+    let currentTrackIndex = 0;
+
     // Iterate over the first four songs only
     for (let index = 1; index < 5; index++) {
-        // Initialize current track index
-        let currentTrackIndex = 0;
 
-        // Function to update the UI with track information
-        const updateUI = (track) => {
-            const albumImage = document.querySelector('.album-image');
-            const songTitle = document.querySelector('.song-title');
-            const songArtist = document.querySelector('.song-artist');
-            const albumName = document.querySelector('.album-name');
-
-            albumImage.src = track.albumImageUrl;
-            songTitle.textContent = track.title;
-            songArtist.textContent = track.artist;
-            albumName.textContent = track.albumTitle;
-        };
-
-
-        updateUI(data.songs[currentTrackIndex]);
-        
         const song = data.songs[index];
-
-        console.log('song', song)
 
         const track = document.createElement('div');
         track.classList.add('track');
@@ -101,42 +84,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Check if the click target is not one of the icon buttons
             if (!event.target.closest('.icon')) {
                 currentTrackIndex = index;
-                console.log('current track', currentTrackIndex)
+
                 updateUI(song)
 
                 await startPlayback(song.uri); 
+                playButton.style.display = 'none';
+                pauseButton.style.display = 'inline-block';
+                localStorage.removeItem('currentTrackIndex');
+                localStorage.setItem('currentTrackIndex', currentTrackIndex)
+                console.log(currentTrackIndex)
             }
-
-            const nextButton = document.querySelector('.next-song');
-            const previousButton = document.querySelector('.previous-song');
-
-            nextButton.addEventListener('click', async () => {
-                try {
-                currentTrackIndex = (currentTrackIndex + 1) % data.songs.length;
-
-                const nextSong = data.songs[currentTrackIndex]
-                updateUI(nextSong)
-                
-                await startPlayback(nextSong.uri);
-                } catch (error) {
-                    console.error('Error starting playback:', error);
-                }
-            });
-        
-            previousButton.addEventListener('click', async () => {
-                try {
-                currentTrackIndex = (currentTrackIndex - 1 + data.songs.length) % data.songs.length;
-
-                console.log('previous track', currentTrackIndex)
-
-                const previousSong = data.songs[currentTrackIndex];
-                updateUI(previousSong)
-    
-                await startPlayback(previousSong.uri);
-                } catch (error) {
-                    console.error('Error starting playback:', error);
-                }
-            });
         
         });
 
@@ -233,6 +190,67 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         document.getElementById('recommendations-holder').appendChild(track);
     }
+
+        const nextButton = document.querySelector('.next-song');
+        const previousButton = document.querySelector('.previous-song');
+
+        nextButton.addEventListener('click', () => {
+            try {
+            currentTrackIndex = (currentTrackIndex + 1) % data.songs.length;
+
+            const nextSong = data.songs[currentTrackIndex]
+            updateUI(nextSong)
+            
+            startPlayback(nextSong.uri);
+            localStorage.removeItem('currentTrackIndex');
+            localStorage.setItem('currentTrackIndex', currentTrackIndex)
+            } catch (error) {
+                console.error('Error starting playback:', error);
+            }
+        });
+
+        previousButton.addEventListener('click', () => {
+            try {
+            currentTrackIndex = (currentTrackIndex - 1 + data.songs.length) % data.songs.length;
+
+            const previousSong = data.songs[currentTrackIndex];
+            updateUI(previousSong)
+
+            startPlayback(previousSong.uri);
+            localStorage.removeItem('currentTrackIndex');
+            localStorage.setItem('currentTrackIndex', currentTrackIndex)
+            } catch (error) {
+                console.error('Error starting playback:', error);
+            }
+        });
+
+        const progressBar = document.querySelector('.progress-bar');
+
+        progressBar.addEventListener('click', (event) => {
+            const boundingRect = progressBar.getBoundingClientRect();
+            const clickX = event.clientX - boundingRect.left;
+            const progressBarWidth = boundingRect.width;
+            const percentageClicked = clickX / progressBarWidth;
+    
+            // Calculate position in milliseconds
+            const duration_ms = parseInt(document.querySelector('.total-time').textContent.split(':').reduce((acc, time) => (60 * acc) + +time, 0)); 
+            const positionMs = Math.floor(duration_ms * percentageClicked);
+
+            seekProgress(positionMs);
+        });
+
+
+        const repeatButton = document.getElementById('repeat-button');
+        const shuffleButton = document.getElementById('shuffle-button');
+    
+        repeatButton.addEventListener('click', () => {
+            toggleRepeat();
+        });
+    
+        shuffleButton.addEventListener('click', () => {
+            toggleShuffle();
+        });
+
     } catch (error) {
         console.error('Error displaying country song recommendations:', error);
     }
@@ -288,5 +306,7 @@ const search = async (filter, searchText) => {
                 window.location.href = `/searchTracks?filter=${filter}&searchText=${searchText}`;
         }
 };
+
+
 
 
