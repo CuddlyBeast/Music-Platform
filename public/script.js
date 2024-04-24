@@ -240,11 +240,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
 
 
-        const repeatButton = document.getElementById('repeat-button');
+        const repeatButton = document.getElementById('repeat-buttons-container');
         const shuffleButton = document.getElementById('shuffle-button');
     
-        repeatButton.addEventListener('click', () => {
-            toggleRepeat();
+        repeatButton.addEventListener('click', (event) => {
+            const clickedButtonId = event.target.id;
+            if (clickedButtonId === 'repeat-button' || clickedButtonId === 'repeat-song-button') {
+                toggleRepeat();
+            }
         });
     
         shuffleButton.addEventListener('click', () => {

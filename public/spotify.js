@@ -2,7 +2,7 @@ let deviceId = null
 let timer = null; 
 let startTime = null;
 let lastPercentage = 0;
-let repeatMode = 'off'; // Possible values: 'off', 'track', 'playlist'
+let repeatMode = 'off'; 
 let isShuffleEnabled = false;
 let modifiedData = null; 
 
@@ -326,10 +326,9 @@ const handleTrackEnd = () => {
             break;
         case 'playlist':
             // If end of playlist is reached, stop playback or loop based on application logic
-            if (currentTrackIndex === playlist.length - 1) {
-                // Handle end of playlist based on application logic
+            if (currentTrackIndex === modifiedData.songs.length - 1) {
+                startPlayback(modifiedData.songs[0].uri)
             } else {
-                // Automatically load and play the next track
                 playNextTrack();
             }
             break;
@@ -338,8 +337,33 @@ const handleTrackEnd = () => {
     }
 };
 
-const toggleRepeat = () => {
+window.toggleRepeat = () => {
     const repeatButton = document.getElementById('repeat-button');
+    const repeatSongButton = document.getElementById('repeat-song-button');
+    
+
+    switch (repeatMode) {
+        case 'off':
+            repeatMode = 'track'; 
+            repeatButton.style.display = 'none'; 
+            repeatSongButton.style.display = 'inline-block';
+            repeatSongButton.style.color = 'blue';
+            break;
+        case 'track':
+            repeatMode = 'playlist'; 
+            repeatButton.style.display = 'inline-block';
+            repeatSongButton.style.display = 'none';
+            repeatButton.style.color = 'blue'; 
+            break;
+        case 'playlist':
+            repeatMode = 'off'; 
+            repeatButton.style.display = 'inline-block'; 
+            repeatSongButton.style.display = 'none';
+            repeatButton.style.color = 'white'; 
+            break;
+        default:
+            break;
+    }
 };
 
 const preloadNextData = async (trackData) => {

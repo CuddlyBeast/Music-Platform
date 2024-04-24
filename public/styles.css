@@ -594,6 +594,10 @@ html, body{
     border-radius: 18px;
 }
 
+#repeat-song-button{
+    display: none;
+}
+
 .container .right-section .music-player .player-actions .lyrics{
     display: flex;
     flex-direction: column;
