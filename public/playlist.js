@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', async function() {
          }
         const playlist = await response.json();
 
+        initializeMusicPlayer(playlist.tracks)
+
         const playlistInfo = document.querySelector('.trending');
         playlistInfo.innerHTML = `
             <div class="left">
@@ -58,6 +60,25 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <i class='bx bxs-plus-square'></i>
                 </div>
             `;
+
+            trackItem.addEventListener('click', async (event) => {
+                // Check if the click target is not one of the icon buttons
+                if (!event.target.closest('.icon')) {
+                    const playButton = document.querySelector('.play-button');
+                    const pauseButton = document.querySelector('.pause-button');
+                    
+                    currentTrackIndex = index;
+    
+                    updateUI(track)
+    
+                    await startPlayback(track.uri); 
+                    playButton.style.display = 'none';
+                    pauseButton.style.display = 'inline-block';
+                    localStorage.removeItem('currentTrackIndex');
+                    localStorage.setItem('currentTrackIndex', currentTrackIndex)
+                }
+            
+            });
 
             const likeButton = trackItem.querySelector('.bx.bxs-heart')
 

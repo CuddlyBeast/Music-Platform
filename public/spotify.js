@@ -139,7 +139,8 @@ function updateTimer(duration, paused) {
 
         if (!paused && currentSeconds >= Math.floor(duration / 1000)) {
             console.log('Timer reached the end of the track. Calling playNextTrack...');
-            playNextTrack();       
+            clearInterval(timer); 
+            handleTrackEnd();       
         }
     }, 1000); 
 
@@ -277,7 +278,7 @@ window.seekProgress = async (positionMs) => {
 
 window.toggleShuffle = () => {
     isShuffleEnabled = !isShuffleEnabled;
-    // Update UI to reflect shuffle state
+
     const shuffleButton = document.getElementById('shuffle-button');
     shuffleButton.style.color = isShuffleEnabled ? 'blue' : 'white';
 };
@@ -292,40 +293,30 @@ const playNextTrack = async () => {
     }
 
     if (isShuffleEnabled) {
-        // Generate a random index within the playlist range
         nextIndex = Math.floor(Math.random() * modifiedData.songs.length);
     } else {
-        // Increment index to play the next track sequentially
         nextIndex = currentTrackIndex + 1;
     }
 
     localStorage.setItem('currentTrackIndex', nextIndex);
 
-    console.log(isShuffleEnabled)
-    // Update currentTrackIndex
     currentTrackIndex = nextIndex;
-    console.log(currentTrackIndex)
 
-    // Play the next track
-    console.log('uri track', modifiedData.songs[currentTrackIndex].uri)
     startPlayback(modifiedData.songs[currentTrackIndex].uri);
     updateUI(modifiedData.songs[currentTrackIndex])
 };
 
 const handleTrackEnd = () => {
     let currentTrackIndex = parseInt(localStorage.getItem('currentTrackIndex'));
-    // Check repeat mode
+
     switch (repeatMode) {
         case 'off':
-            // Automatically load and play the next track
             playNextTrack();
             break;
         case 'track':
-            // Replay the current track
             startPlayback(modifiedData.songs[currentTrackIndex].uri);
             break;
         case 'playlist':
-            // If end of playlist is reached, stop playback or loop based on application logic
             if (currentTrackIndex === modifiedData.songs.length - 1) {
                 startPlayback(modifiedData.songs[0].uri)
             } else {
@@ -384,10 +375,24 @@ const updateUI = (track) => {
     const songArtist = document.querySelector('.song-artist');
     const albumName = document.querySelector('.album-name');
     
-    albumImage.src = track.albumImageUrl;
-    songTitle.textContent = track.title;
-    songArtist.textContent = track.artist;
-    albumName.textContent = track.albumTitle;
+    if (track.albumImageUrl && track.title && track.artist && track.albumTitle) {
+        // Use the old properties if available
+        albumImage.src = track.albumImageUrl;
+        songTitle.textContent = track.title;
+        songArtist.textContent = track.artist;
+        albumName.textContent = track.albumTitle;
+    } else if (track.imageUrl && track.name && track.artist && track.albumTitle) {
+        // Use the new properties if the old ones are not found
+        albumImage.src = track.imageUrl;
+        songTitle.textContent = track.name;
+        songArtist.textContent = track.artist;
+        albumName.textContent = track.albumTitle;
+    } else {
+        albumImage.src = track.album.images[0].url;
+        songTitle.textContent = track.name;
+        songArtist.textContent = track.artists.name;
+        albumName.textContent = track.album.name
+    }
     };
     
 

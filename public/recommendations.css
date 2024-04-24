@@ -418,6 +418,11 @@ html, body{
     margin-bottom: 30px;
 }
 
+.container .right-section .music-player .header i,
+.container .right-section .music-player .player-actions .lyrics i{
+    cursor: default;
+}
+
 .container .right-section .music-player .song-info{
     display: flex;
     flex-direction: column;
@@ -458,30 +463,24 @@ html, body{
     font-size: 11px;
 }
 
-.container .right-section .music-player .song-info .progress .active-line{
+.container .right-section .music-player .song-info .progress .progress-bar{
     position: relative;
-    width: 120px;
-    height: 2px;
-    background-color: #fff;
-    margin-left: 30px;
-}
-
-.container .right-section .music-player .song-info .progress .deactive-line{
-    width: 80px;
+    width: 200px;
     height: 2px;
     background-color: #919191;
-    margin-right: 30px;
+    margin: 0px 10px;
 }
 
-.container .right-section .music-player .song-info .progress .active-line::before{
+
+.container .right-section .music-player .song-info .progress .progress-circle{
     content: "";
     background-color: #25252d;
     height: 10px;
     width: 10px;
     border: 2px solid #fff;
     position: absolute;
-    top: -6px;
-    left: 120px;
+    top: -4px;
+    left: calc(100% - 200px);
     border-radius: 50%;
 }
     
@@ -511,6 +510,20 @@ html, body{
     background-color: #fff;
     color: #5773ff;
     border-radius: 18px;
+    display: none;
+}
+
+.container .right-section .music-player .player-actions .buttons .pause-button{
+    /* display: none; */
+    font-size: 30px;
+    padding: 11px;
+    background-color: #fff;
+    color: #5773ff;
+    border-radius: 18px;
+}
+
+#repeat-song-button{
+    display: none;
 }
 
 .container .right-section .music-player .player-actions .lyrics{

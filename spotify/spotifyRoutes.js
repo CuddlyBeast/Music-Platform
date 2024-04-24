@@ -169,10 +169,12 @@ router.get('/playlists/:id', ensureAccessToken, async (req, res) => {
             playCount: playlist.body.tracks.total,
             imageUrl: playlist.body.images.length > 0 ? playlist.body.images[0].url : '',
             tracks: playlist.body.tracks.items.map(item => ({
+                uri: item.track.uri,
                 id: item.track.id,
                 name: item.track.name,
                 artist: item.track.artists.map(artist => artist.name).join(', '),
                 imageUrl: item.track.album.images.length > 0 ? item.track.album.images[0].url : '',
+                albumTitle: item.track.album.name,
                 duration: formatDuration(item.track.duration_ms)
             }))
         };
@@ -671,7 +673,7 @@ router.get('/search', ensureAccessToken, async (req, res) => {
 
         const searchResults = await spotifyApi.search(searchText, [searchType], options);
 
-        console.log(searchResults.body)
+        console.log(searchResults.body.tracks.items[0])
            
         res.json(searchResults.body);
     } catch (error) {

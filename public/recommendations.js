@@ -7,9 +7,30 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const data = await response.json();
 
+        initializeMusicPlayer(data.songs)
+
         data.songs.forEach((song, index) => {
             const item = document.createElement('div');
             item.classList.add('item');
+
+            item.addEventListener('click', async (event) => {
+                // Check if the click target is not one of the icon buttons
+                if (!event.target.closest('.icon')) {
+                    const playButton = document.querySelector('.play-button');
+                    const pauseButton = document.querySelector('.pause-button');
+                    
+                    currentTrackIndex = index;
+    
+                    updateUI(song)
+    
+                    await startPlayback(song.uri); 
+                    playButton.style.display = 'none';
+                    pauseButton.style.display = 'inline-block';
+                    localStorage.removeItem('currentTrackIndex');
+                    localStorage.setItem('currentTrackIndex', currentTrackIndex)
+                }
+            
+            });
 
             const info = document.createElement('div');
             info.classList.add('info');

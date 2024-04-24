@@ -2,6 +2,23 @@ const express = require('express');
 const router = express.Router();
 const { spotifyApi } = require('./authRoutes');
 
+// NEED TO ADD THIS ROUTE TO LOGIC FOR VOLUME CONTROL
+router.post('/playback/volume', async (req, res) => {
+    try {
+        const { volumePercent } = req.body;
+        const accessToken = req.headers.authorization.split(' ')[1];
+        spotifyApi.setAccessToken(accessToken);
+
+        // Set the volume of the user's currently active device
+        await spotifyApi.setVolume(volumePercent);
+
+        res.status(200).json({ message: 'Volume set successfully.' });
+    } catch (error) {
+        console.error('Error setting volume:', error);
+        res.status(500).json({ error: 'Failed to set volume. Please try again.' });
+    }
+});
+
 router.post('/playback/play', async (req, res) => {
     try {
         const { trackUri , deviceId } = req.body;

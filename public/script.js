@@ -27,6 +27,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     preloadNextData(data);
 
+    let currentTrackIndex = 0;
+    const playButton = document.querySelector('.play-button');
+    const pauseButton = document.querySelector('.pause-button');
+
     // Target first song for trending section
     const firstSong = data.songs[0];
 
@@ -45,6 +49,22 @@ document.addEventListener('DOMContentLoaded', async function() {
     const listenButton = document.createElement('button');
     listenButton.textContent = 'Listen Now';
 
+    listenButton.addEventListener('click', async (event) => {
+        // Check if the click target is not one of the icon buttons
+        if (!event.target.closest('.icon')) {
+            currentTrackIndex = 0;
+
+            updateUI(firstSong)
+
+            await startPlayback(firstSong.uri); 
+            playButton.style.display = 'none';
+            pauseButton.style.display = 'inline-block';
+            localStorage.removeItem('currentTrackIndex');
+            localStorage.setItem('currentTrackIndex', currentTrackIndex)
+        }
+    
+    });
+
     const heartIcon = document.createElement('i');
     heartIcon.classList.add('bx', 'bxs-heart');
 
@@ -58,8 +78,30 @@ document.addEventListener('DOMContentLoaded', async function() {
         heartIcon.style.color = 'rgb(230, 3, 199)';     
     })
 
+    const plusIcon = document.createElement('i');
+    plusIcon.classList.add('bx', 'bxs-plus-square');
+
+    plusIcon.addEventListener('click', async (event) => {
+        const token = localStorage.getItem('token');
+        const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!playlistsResponse.ok) {
+            throw new Error('Failed to fetch user playlists');
+        }
+
+        const playlistsData = await playlistsResponse.json();
+        const playlistContainer = populateOverlayMenu(playlistsData);
+        displayOverlayMenu(event, firstSong.id, playlistContainer);
+    });
+
     buttonsContainer.appendChild(listenButton);
     buttonsContainer.appendChild(heartIcon);
+    buttonsContainer.appendChild(plusIcon);
 
     infoContainer.appendChild(songTitle);
     infoContainer.appendChild(songArtist);
@@ -69,8 +111,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     trendingImage.src = firstSong.albumImageUrl;
 
     trendingContainer.appendChild(trendingImage);
-
-    let currentTrackIndex = 0;
 
     // Iterate over the first four songs only
     for (let index = 1; index < 5; index++) {
@@ -92,13 +132,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 pauseButton.style.display = 'inline-block';
                 localStorage.removeItem('currentTrackIndex');
                 localStorage.setItem('currentTrackIndex', currentTrackIndex)
-                console.log(currentTrackIndex)
             }
         
         });
-
-        const playButton = document.querySelector('.play-button');
-        const pauseButton = document.querySelector('.pause-button');
 
         playButton.addEventListener('click', function() {
             playButton.style.display = 'none';
