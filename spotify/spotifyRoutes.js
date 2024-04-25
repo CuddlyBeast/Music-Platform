@@ -211,6 +211,7 @@ router.get('/albums/:id', ensureAccessToken, async (req, res) => {
             release_date_precision: album.body.release_date_precision,
             total_tracks: album.body.total_tracks,
             tracks: album.body.tracks.items.map(item => ({
+                uri: item.uri,
                 id: item.id,
                 name: item.name,
                 artist: item.artists.map(artist => artist.name).join(', '),
@@ -494,7 +495,20 @@ router.get('/recentlyPlayedTracks', ensureAccessToken, async (req, res) => {
     try {
         const recentlyPlayedResponse = await spotifyApi.getMyRecentlyPlayedTracks();
         const recentlyPlayedTracks = recentlyPlayedResponse.body.items;
-        res.json(recentlyPlayedTracks);
+
+        const uniqueTracks = new Set();
+        const filteredTracks = recentlyPlayedTracks.filter(track => {
+            const key = `${track.track.name}-${track.track.artists[0].name}`;
+            if (!uniqueTracks.has(key)) {
+                uniqueTracks.add(key);
+                return true; 
+            }
+            return false; 
+        }).map(item => ({
+            ...item.track,
+        }));
+
+        res.json(filteredTracks);
     } catch (error) {
         console.error('Error retrieving recently played tracks:', error);
         res.status(500).json({ error: 'An error occurred while retrieving recently played tracks.' });
@@ -556,8 +570,21 @@ router.get('/mySavedTracks', ensureAccessToken, async (req, res) => {
     try {
         const savedTracksResponse = await spotifyApi.getMySavedTracks();
         const savedTracks = savedTracksResponse.body.items;
+
+        const uniqueTracks = new Set();
+        const filteredTracks = savedTracks.filter(track => {
+            const key = `${track.track.name}-${track.track.artists[0].name}`;
+            if (!uniqueTracks.has(key)) {
+                uniqueTracks.add(key);
+                return true; 
+            }
+            return false; 
+        }).map(item => ({
+            ...item.track,
+        }));
+
         
-        res.json(savedTracks);
+        res.json(filteredTracks);
     } catch (error) {
         console.error('Error retrieving saved tracks:', error);
         res.status(500).json({ error: 'An error occurred while retrieving saved tracks.' });
@@ -672,8 +699,6 @@ router.get('/search', ensureAccessToken, async (req, res) => {
         };
 
         const searchResults = await spotifyApi.search(searchText, [searchType], options);
-
-        console.log(searchResults.body.tracks.items[0])
            
         res.json(searchResults.body);
     } catch (error) {

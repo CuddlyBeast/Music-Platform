@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const data = await response.json();
 
         initializeMusicPlayer(data.songs)
+        preloadNextData(data.songs);
 
         data.songs.forEach((song, index) => {
             const item = document.createElement('div');

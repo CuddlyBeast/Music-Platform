@@ -40,7 +40,7 @@ router.get('/tracks/search', authenticateUser, async (req, res) => {
 router.post("/track", authenticateUser, async (req, res) => {
     try {
         console.log('req track body',req.body)
-        const { spotifyId, title, artist, album, durationMs, releaseDate, image } = req.body; 
+        const { spotifyId, title, artist, album, durationMs, releaseDate, image, uri } = req.body; 
 
     const existingTrack = await Track.findOne({ where: { spotifyId } });
 
@@ -49,6 +49,7 @@ router.post("/track", authenticateUser, async (req, res) => {
                 message: "Track already exists",
                 Track: {
                     id: existingTrack.id,
+                    uri: existingTrack.uri,
                     spotifyId: existingTrack.spotifyId,
                     title: existingTrack.title,
                     artist: existingTrack.artist,
@@ -60,6 +61,7 @@ router.post("/track", authenticateUser, async (req, res) => {
             });
         } else {
             const newTrack = await Track.create({
+                uri,
                 spotifyId,
                 title,
                 artist,
@@ -73,6 +75,7 @@ router.post("/track", authenticateUser, async (req, res) => {
                 message: "Track created successfully",
                 Track: {
                     id: newTrack.id,
+                    uri: newTrack.uri,
                     spotifyId: newTrack.spotifyId,
                     title: newTrack.title,
                     artist: newTrack.artist,

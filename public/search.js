@@ -14,9 +14,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const data = await response.json();
 
-        initializeMusicPlayer(data.tracks.items)
-
         if (filter === 'tracks') {
+
+        initializeMusicPlayer(data.tracks.items)
+        preloadNextData(data.tracks.items);
 
         data.tracks.items.forEach((track, index) => {
             const item = document.createElement('div');
@@ -412,7 +413,7 @@ async function fetchArtistsByPage(filter, searchText, page, limit) {
         const button = document.createElement('button');
         button.textContent = 'View Now';
         button.addEventListener('click', function() {
-            viewartist(artist.id);
+            viewArtist(artist.id);
         });
 
         const heartIcon = document.createElement('i');

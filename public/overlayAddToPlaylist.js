@@ -69,6 +69,7 @@ function displayOverlayMenu(event, song, playlistContainer) {
                 const trackData = await spotifyResponse.json();
 
                 console.log(trackData)
+                const trackSpotifyUri = trackData.uri
                 const trackSpotifyId = trackData.id
                 const trackTitle = trackData.name
                 const trackArtist = trackData.artists.map(artist => artist.name).join(', ');
@@ -84,7 +85,7 @@ function displayOverlayMenu(event, song, playlistContainer) {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ spotifyId:trackSpotifyId, title:trackTitle, artist:trackArtist, album:trackAlbum, durationMs:trackDurationMs, releaseDate:trackReleaseDate, image: trackImage })
+                    body: JSON.stringify({ spotifyId:trackSpotifyId, title:trackTitle, artist:trackArtist, album:trackAlbum, durationMs:trackDurationMs, releaseDate:trackReleaseDate, image: trackImage, uri: trackSpotifyUri })
                 });
         
                 if (!trackPostResponse.ok) {

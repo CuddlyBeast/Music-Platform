@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const data = await response.json();
 
-    preloadNextData(data);
+    preloadNextData(data.songs);
 
     let currentTrackIndex = 0;
     const playButton = document.querySelector('.play-button');

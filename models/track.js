@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     album: DataTypes.STRING,
     durationMs: DataTypes.INTEGER,
     releaseDate: DataTypes.DATE,
-    image: DataTypes.STRING
+    image: DataTypes.STRING,
+    uri: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Track',

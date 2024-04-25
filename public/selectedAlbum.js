@@ -9,7 +9,16 @@ document.addEventListener('DOMContentLoaded', async function() {
          }
         const albums = await response.json();
 
-        console.log(albums);
+        initializeMusicPlayer(albums.tracks)
+        preloadNextData(albums.tracks);
+
+        let currentTrackIndex = 0;
+
+        const albumImage = document.querySelector('.album-image');
+        const albumName = document.querySelector('.album-name');
+
+        albumName.textContent = albums.name;
+        albumImage.src = albums.images[0].url;
 
         const albumsInfo = document.querySelector('.trending');
         albumsInfo.innerHTML = `
@@ -61,6 +70,25 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <i class='bx bxs-plus-square'></i>
                 </div>
             `;
+
+            trackItem.addEventListener('click', async (event) => {
+                // Check if the click target is not one of the icon buttons
+                if (!event.target.closest('.icon')) {
+                    const playButton = document.querySelector('.play-button');
+                    const pauseButton = document.querySelector('.pause-button');
+                    
+                    currentTrackIndex = index;
+
+                    updateUI(track)
+    
+                    await startPlayback(track.uri); 
+                    playButton.style.display = 'none';
+                    pauseButton.style.display = 'inline-block';
+                    localStorage.removeItem('currentTrackIndex');
+                    localStorage.setItem('currentTrackIndex', currentTrackIndex)
+                }
+            
+            });
 
             const likeButton = trackItem.querySelector('.bx.bxs-heart')
 

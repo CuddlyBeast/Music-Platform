@@ -74,7 +74,7 @@ function formatDuration(duration_ms) {
 }
 
 
-window.startPlayback = async (trackUri, trackData) => {
+window.startPlayback = async (trackUri) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
@@ -287,23 +287,27 @@ const playNextTrack = async () => {
     let nextIndex;
     let currentTrackIndex = parseInt(localStorage.getItem('currentTrackIndex'));
 
-    if (!modifiedData || !modifiedData.songs) {
+    if (!modifiedData) {
         console.error('Modified data is null or songs array is missing.');
         return;
     }
 
     if (isShuffleEnabled) {
-        nextIndex = Math.floor(Math.random() * modifiedData.songs.length);
+        nextIndex = Math.floor(Math.random() * Object.keys(modifiedData).length);
     } else {
-        nextIndex = currentTrackIndex + 1;
+        nextIndex = (currentTrackIndex + 1) % Object.keys(modifiedData).length;
     }
 
-    localStorage.setItem('currentTrackIndex', nextIndex);
+    if (currentTrackIndex === Object.keys(modifiedData).length - 1) {
+        pausePlayback();
+    } else{
+        localStorage.setItem('currentTrackIndex', nextIndex);
 
-    currentTrackIndex = nextIndex;
-
-    startPlayback(modifiedData.songs[currentTrackIndex].uri);
-    updateUI(modifiedData.songs[currentTrackIndex])
+        currentTrackIndex = nextIndex;
+    
+        startPlayback(modifiedData[currentTrackIndex].uri);
+        updateUI(modifiedData[currentTrackIndex])
+    }
 };
 
 const handleTrackEnd = () => {
@@ -314,11 +318,14 @@ const handleTrackEnd = () => {
             playNextTrack();
             break;
         case 'track':
-            startPlayback(modifiedData.songs[currentTrackIndex].uri);
+            startPlayback(modifiedData[currentTrackIndex].uri);
             break;
         case 'playlist':
-            if (currentTrackIndex === modifiedData.songs.length - 1) {
-                startPlayback(modifiedData.songs[0].uri)
+            if (currentTrackIndex === Object.keys(modifiedData).length - 1) {
+                currentTrackIndex = 0
+                console.log(currentTrackIndex)
+                updateUI(modifiedData[currentTrackIndex])
+                startPlayback(modifiedData[currentTrackIndex].uri)
             } else {
                 playNextTrack();
             }
@@ -359,6 +366,7 @@ window.toggleRepeat = () => {
 
 const preloadNextData = async (trackData) => {
     try {
+        console.log({ ...trackData })
         modifiedData = { ...trackData };
 
     } catch (error) {
@@ -376,17 +384,23 @@ const updateUI = (track) => {
     const albumName = document.querySelector('.album-name');
     
     if (track.albumImageUrl && track.title && track.artist && track.albumTitle) {
-        // Use the old properties if available
         albumImage.src = track.albumImageUrl;
         songTitle.textContent = track.title;
         songArtist.textContent = track.artist;
         albumName.textContent = track.albumTitle;
     } else if (track.imageUrl && track.name && track.artist && track.albumTitle) {
-        // Use the new properties if the old ones are not found
         albumImage.src = track.imageUrl;
         songTitle.textContent = track.name;
         songArtist.textContent = track.artist;
         albumName.textContent = track.albumTitle;
+    } else if (track.image && track.title && track.artist && track.album) {
+        albumImage.src = track.image;
+        songTitle.textContent = track.title;
+        songArtist.textContent = track.artist;
+        albumName.textContent = track.album;
+    } else if (!track.imageUrl && track.name && track.artist && !track.albumTitle) { 
+        songTitle.textContent = track.name;
+        songArtist.textContent = track.artist;
     } else {
         albumImage.src = track.album.images[0].url;
         songTitle.textContent = track.name;

@@ -16,9 +16,14 @@ document.addEventListener('DOMContentLoaded', async function() {
          }
         const playlist = await response.json();
 
-        const myPlaylist = playlist[0];
+        const playlistTracks = playlist.map(track => ({ ...track.Track, }))
 
-        console.log('playlist info', playlist);
+        initializeMusicPlayer(playlistTracks)
+        preloadNextData(playlistTracks);
+
+        console.log('playlistTracks', playlistTracks)
+
+        const myPlaylist = playlist[0];
 
         const playlistInfo = document.querySelector('.trending');
         playlistInfo.innerHTML = `
@@ -58,20 +63,20 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const tracksContainer = document.querySelector('.playlist .music-list .items');
         tracksContainer.innerHTML = '';
-        playlist.forEach((track, index) => {
+        playlistTracks.forEach((track, index) => {
             const trackItem = document.createElement('div');
             trackItem.classList.add('item');
             trackItem.innerHTML = `
                 <div class="info">
                     <p>${index + 1}</p>
-                    <img src="${track.Track.image}">
+                    <img src="${track.image}">
                     <div class="details">
-                        <h5>${track.Track.title}</h5>
-                        <p>${track.Track.artist}</p>
+                        <h5>${track.title}</h5>
+                        <p>${track.artist}</p>
                     </div>
                 </div>
                 <div class="actions">
-                    <p>${formatDuration(track.Track.durationMs)}</p>
+                    <p>${formatDuration(track.durationMs)}</p>
                     <div class="icon">
                         <i class='bx bxs-heart'></i>
                     </div>
@@ -80,10 +85,29 @@ document.addEventListener('DOMContentLoaded', async function() {
                 </div>
             `;
 
+            trackItem.addEventListener('click', async (event) => {
+                // Check if the click target is not one of the icon buttons
+                if (!event.target.closest('.icon')) {
+                    const playButton = document.querySelector('.play-button');
+                    const pauseButton = document.querySelector('.pause-button');
+                    
+                    currentTrackIndex = index;
+    
+                    updateUI(track)
+    
+                    await startPlayback(track.uri); 
+                    playButton.style.display = 'none';
+                    pauseButton.style.display = 'inline-block';
+                    localStorage.removeItem('currentTrackIndex');
+                    localStorage.setItem('currentTrackIndex', currentTrackIndex)
+                }
+            
+            });
+
             const likeButton = trackItem.querySelector('.bx.bxs-heart')
 
             likeButton.addEventListener('click', async () => {
-                const response = await fetch(`http://localhost:3000/chill/save-track/${track.Track.spotifyId}`, {
+                const response = await fetch(`http://localhost:3000/chill/save-track/${track.spotifyId}`, {
                     method: 'PUT'
                 });
                 if (!response.ok) {
@@ -100,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const selectedPlaylist = urlParams.get('id');
                 const token = localStorage.getItem('token');
-                const spotifyId = track.Track.spotifyId; 
+                const spotifyId = track.spotifyId; 
                 const action = 'remove';
                 try {
                     const response = await fetch(`http://localhost:3000/chill/personalPlaylist/${selectedPlaylist}`, {
@@ -139,7 +163,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
                 const playlistsData = await playlistsResponse.json();
                 const playlistContainer = populateOverlayMenu(playlistsData);
-                displayOverlayMenu(event, track.Track.spotifyId, playlistContainer);
+                displayOverlayMenu(event, track.spotifyId, playlistContainer);
             });
 
             tracksContainer.appendChild(trackItem);

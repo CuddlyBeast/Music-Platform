@@ -7,9 +7,31 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const data = await response.json();
 
+        initializeMusicPlayer(data)
+        preloadNextData(data);
+
         data.forEach((track, index) => {
             const item = document.createElement('div');
             item.classList.add('item');
+
+            item.addEventListener('click', async (event) => {
+                // Check if the click target is not one of the icon buttons
+                if (!event.target.closest('.icon')) {
+                    const playButton = document.querySelector('.play-button');
+                    const pauseButton = document.querySelector('.pause-button');
+                    
+                    currentTrackIndex = index;
+    
+                    updateUI(track)
+    
+                    await startPlayback(track.uri); 
+                    playButton.style.display = 'none';
+                    pauseButton.style.display = 'inline-block';
+                    localStorage.removeItem('currentTrackIndex');
+                    localStorage.setItem('currentTrackIndex', currentTrackIndex)
+                }
+            
+            });
 
             const info = document.createElement('div');
             info.classList.add('info');
@@ -18,16 +40,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             trackNumber.textContent = (index + 1).toString().padStart(2, '0');
 
             const img = document.createElement('img');
-            img.src = track.track.album.images[0].url; 
+            img.src = track.album.images[0].url; 
 
             const details = document.createElement('div');
             details.classList.add('details');
 
             const title = document.createElement('h5');
-            title.textContent = track.track.name;
+            title.textContent = track.name;
 
             const artist = document.createElement('p');
-            artist.textContent = track.track.artists.map(artist => artist.name).join(', '); 
+            artist.textContent = track.artists.map(artist => artist.name).join(', '); 
 
             details.appendChild(title);
             details.appendChild(artist);
@@ -40,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             actions.classList.add('actions');
 
             const duration = document.createElement('p');
-            duration.textContent = formatDuration(track.track.duration_ms); 
+            duration.textContent = formatDuration(track.duration_ms); 
 
             const icon = document.createElement('div');
             icon.classList.add('icon');
@@ -49,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const likeButton = icon.querySelector('.bx.bxs-heart')
     
             likeButton.addEventListener('click', async () => {
-                const response = await fetch(`http://localhost:3000/chill/save-track/${track.track.id}`, {
+                const response = await fetch(`http://localhost:3000/chill/save-track/${track.id}`, {
                     method: 'PUT'
                 });
                 if (!response.ok) {
@@ -76,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 const playlistsData = await playlistsResponse.json();
                 const playlistContainer = populateOverlayMenu(playlistsData);
-                displayOverlayMenu(event, track.track.id, playlistContainer);
+                displayOverlayMenu(event, track.id, playlistContainer);
             });
 
             actions.appendChild(duration);
