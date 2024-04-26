@@ -82,10 +82,12 @@ router.post('/genre-songs', ensureAccessToken, async (req, res) => {
         for (const artistId of artistIds) {
             const response = await spotifyApi.getArtistTopTracks(artistId, 'US');
             const topTracks = response.body.tracks.map(track => ({
+                uri: track.uri,
                 id: track.id,
                 title: track.name,
-                artists: track.artists.map(artist => artist.name).join(', '),
+                artist: track.artists.map(artist => artist.name).join(', '),
                 albumImageUrl: track.album.images[0].url,
+                albumTitle: track.album.name,
                 duration: formatDuration(track.duration_ms)
             }));
             allSongs.push(...topTracks);
@@ -98,10 +100,12 @@ router.post('/genre-songs', ensureAccessToken, async (req, res) => {
         });
     
         const recommendationTracks = recommendationsResponse.body.tracks.map(track => ({
+            uri: track.uri,
             id: track.id,
             title: track.name,
-            artists: track.artists.map(artist => artist.name).join(', '),
+            artist: track.artists.map(artist => artist.name).join(', '),
             albumImageUrl: track.album.images[0].url,
+            albumTitle: track.album.name,
             duration: formatDuration(track.duration_ms)
         }));
     

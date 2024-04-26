@@ -764,7 +764,7 @@ html, body{
 
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1300px) {
     .container main header .search{
         width: 40%;
     }
@@ -835,7 +835,7 @@ html, body{
     }
 }
 
-@media screen and (max-width: 992px){
+@media screen and (max-width: 1150px){
     .container{
         grid-template-columns: 3fr 2fr;
     }
@@ -854,12 +854,13 @@ html, body{
     }
 
     .container main header .search{
-        width: 38px;
+        width: auto;
+        margin-left: 5px;
     }
 
-    .container main header .search input{
+    /* .container main header .search input{
         display: none;
-    }
+    } */
 
     .container main .trending img{
         width: 120px;
@@ -900,13 +901,9 @@ html, body{
         grid-template-columns: 1fr;
     }
 
-    .container main .trending,
-    .container main .playlist{
-          display: none;  
-    }
 
     .container main header .search{
-        width: 40%;
+        width: auto;
     }
 
     .container main header .search input{
@@ -933,6 +930,10 @@ html, body{
 
     .container .right-section .music-player .buttons i{
         font-size: 22px;
+    }
+
+    .container .right-section .music-player .buttons{
+        padding-bottom: 60px;
     }
 
 }

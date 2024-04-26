@@ -366,7 +366,6 @@ window.toggleRepeat = () => {
 
 const preloadNextData = async (trackData) => {
     try {
-        console.log({ ...trackData })
         modifiedData = { ...trackData };
 
     } catch (error) {

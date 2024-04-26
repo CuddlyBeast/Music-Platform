@@ -726,30 +726,7 @@ html, body{
 
 @media screen and (max-width: 1200px) {
     .container main header .search{
-        width: 40%;
-    }
-
-    .container main .trending .left .info h2{
-        font-size: 24px;
-    }
-
-    .container main .trending .left .info h5{
-        display: block;
-        font-size: 12px;
-        margin-left: 0;
-    }
-
-    .container main .trending .left .info .buttons button{
-        padding: 10px 12px;
-        font-size: 12px;
-    }
-
-    .container main .trending .left .info .buttons i{
-        font-size: 14px;
-    }
-
-    .container main .playlist .genres{
-        display: none;
+        width: auto;
     }
 
     .container main .playlist .music-list{
@@ -760,9 +737,21 @@ html, body{
         height: 88%;
     }
 
-    .container .right-section .music-player .song-info img{
-        width: 220px;
-        height: 220px;
+    .container .right-section .music-player .buttons i{
+        font-size: 16px;
+    }
+
+    .container main .playlist .music-list .items .item .info p{
+        font-size: 14px;
+    }
+
+    .container main .playlist .music-list .items .item .info {
+        padding: 5px;
+    }
+
+    
+    .container main .playlist .music-list .items .item .actions p{
+        font-size: 14px;
     }
 
     .container .right-section .music-player .song-info .description h3{
@@ -795,7 +784,7 @@ html, body{
     }
 }
 
-@media screen and (max-width: 992px){
+@media screen and (max-width: 1115px){
     .container{
         grid-template-columns: 3fr 2fr;
     }
@@ -805,21 +794,18 @@ html, body{
         left: -100%;
     }
 
-    .container .sidebar .playing{
+    /* .container .sidebar .playing{
         display: none;
-    }
+    } */
 
     .container main header .nav-links a{
         font-size: 13px;
     }
 
-    .container main header .search{
-        width: 38px;
-    }
 
-    .container main header .search input{
+    /* .container main header .search input{
         display: none;
-    }
+    } */
 
     .container main .trending img{
         width: 120px;
@@ -855,14 +841,11 @@ html, body{
     
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 869px) {
     .container{
         grid-template-columns: 1fr;
     }
 
-    .container main header .search{
-        width: 40%;
-    }
 
     .container main header .search input{
         display: block;
@@ -886,6 +869,10 @@ html, body{
         height: 190px;
     }
 
+    .container .right-section .music-player .buttons{
+        padding-bottom: 60px;
+    }
+
 }
 
 
@@ -897,10 +884,6 @@ html, body{
 
     .container main {
         padding: none;
-    }
-
-    .container main header .search{
-        width: 30%;
     }
 
     .container main header .search input{
