@@ -792,20 +792,14 @@ html, body{
     .container .sidebar{
         position: absolute;
         left: -100%;
+        height: fit-content;
     }
 
-    /* .container .sidebar .playing{
-        display: none;
-    } */
 
     .container main header .nav-links a{
         font-size: 13px;
     }
 
-
-    /* .container main header .search input{
-        display: none;
-    } */
 
     .container main .trending img{
         width: 120px;

@@ -843,10 +843,7 @@ html, body{
     .container .sidebar{
         position: absolute;
         left: -100%;
-    }
-
-    .container .sidebar .playing{
-        display: none;
+        height: fit-content;
     }
 
     .container main header .nav-links a{
