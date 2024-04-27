@@ -290,6 +290,32 @@ document.addEventListener('DOMContentLoaded', async function() {
             toggleShuffle();
         });
 
+        const volumeButton = document.querySelector('.volume-button-container');
+        const volumeBar = document.querySelector('.volume-bar');
+        // const volumeLevel = document.querySelector('.volume-level');
+
+        volumeButton.addEventListener('mouseenter', () => {
+            volumeBar.style.display = 'block';
+        });
+        
+        volumeBar.addEventListener('mouseleave', () => {
+            volumeBar.style.display = 'none';
+        });
+
+        volumeButton.addEventListener('click', () => {
+            toggleMute();
+            volumeBar.style.display = 'none';
+        });
+        
+        volumeBar.addEventListener('click', (event) => {
+            const boundingRect = volumeBar.getBoundingClientRect();
+            const offsetX = event.clientX - boundingRect.left;
+            const percentage = (offsetX / boundingRect.width) * 100;
+        
+            // Send the volume percentage to your backend
+            setVolume(percentage);
+        });
+
     } catch (error) {
         console.error('Error displaying country song recommendations:', error);
     }

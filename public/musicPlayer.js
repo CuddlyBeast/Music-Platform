@@ -6,6 +6,8 @@ function initializeMusicPlayer(data) {
     const shuffleButton = document.getElementById('shuffle-button');
     const playButton = document.querySelector('.play-button');
     const pauseButton = document.querySelector('.pause-button');
+    const volumeButton = document.querySelector('.volume-button-container');
+    const volumeBar = document.querySelector('.volume-bar');
     let currentTrackIndex = 0;
 
     nextButton.addEventListener('click', () => {
@@ -72,6 +74,27 @@ function initializeMusicPlayer(data) {
         pauseButton.style.display = 'none';
         playButton.style.display = 'inline-block';
         pausePlayback();
+    });
+
+    volumeButton.addEventListener('mouseenter', () => {
+        volumeBar.style.display = 'block';
+    });
+    
+    volumeBar.addEventListener('mouseleave', () => {
+        volumeBar.style.display = 'none';
+    });
+
+    volumeButton.addEventListener('click', () => {
+        toggleMute();
+    });
+    
+    volumeBar.addEventListener('click', (event) => {
+        const boundingRect = volumeBar.getBoundingClientRect();
+        const offsetX = event.clientX - boundingRect.left;
+        const percentage = (offsetX / boundingRect.width) * 100;
+    
+        // Send the volume percentage to your backend
+        setVolume(percentage);
     });
 }
 

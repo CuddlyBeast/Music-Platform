@@ -364,6 +364,98 @@ window.toggleRepeat = () => {
     }
 };
 
+async function toggleMute() {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+
+        if (!accessToken || !refreshToken) {
+            throw new Error('Access token or refresh token not available');
+        }
+
+        if (!deviceId) {
+            throw new Error('Device ID is not available');
+        }
+
+        // Get the current player state to determine if it's muted
+        const state = await getCurrentState();
+
+        // If currently muted, unmute; if not muted, mute
+        const isMuted = state && state.device.volume_percent === 0;
+        const volumePercent = isMuted ? 100 : 0;
+
+        const response = await fetch('http://localhost:3000/chill/playback/volume', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ volumePercent, deviceId })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to toggle mute');
+        }
+
+        const volumeFullIcon = document.querySelector('.bxs-volume-full');
+        const volumeMuteIcon = document.querySelector('.bxs-volume-mute');
+
+        if (isMuted) {
+            // Show the volume-full icon and hide the volume-mute icon
+            volumeFullIcon.style.display = 'block';
+            volumeMuteIcon.style.display = 'none';
+        } else {
+            // Show the volume-mute icon and hide the volume-full icon
+            volumeFullIcon.style.display = 'none';
+            volumeMuteIcon.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error toggling mute:', error);
+    }
+}
+
+// Function to update volume bar
+function updateVolumeBar(volumePercent) {
+    const volumeLevel = document.querySelector('.volume-level');
+    volumeLevel.style.width = (100 - volumePercent) + '%';
+}
+
+// Function to handle volume changes
+async function setVolume(volumePercent) {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+
+        if (!accessToken || !refreshToken) {
+            throw new Error('Access token or refresh token not available');
+        }
+
+        if (!deviceId) {
+            throw new Error('Device ID is not available');
+        }
+
+        const adjustedVolumePercent = 100 - volumePercent;
+
+        const response = await fetch('http://localhost:3000/chill/playback/volume', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ volumePercent: adjustedVolumePercent, deviceId })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to set volume');
+        }
+
+        // Update the volume bar
+        updateVolumeBar(volumePercent);
+    } catch (error) {
+        console.error('Error setting volume:', error);
+    }
+}
+
 const preloadNextData = async (trackData) => {
     try {
         modifiedData = { ...trackData };
