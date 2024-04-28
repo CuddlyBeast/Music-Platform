@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const playlist = await response.json();
 
         initializeMusicPlayer(playlist.tracks)
+        preloadNextData(playlist.tracks);
 
         const playlistInfo = document.querySelector('.trending');
         playlistInfo.innerHTML = `

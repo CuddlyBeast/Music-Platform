@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         const totalData = await totalResponse.json();
 
-        console.log(totalData)
         const totalAlbums = totalData.items.length;
 
         

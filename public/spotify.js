@@ -1,4 +1,5 @@
 let deviceId = null
+let deviceIdCaptured = false; 
 let timer = null; 
 let startTime = null;
 let lastPercentage = 0;
@@ -6,7 +7,6 @@ let repeatMode = 'off';
 let isShuffleEnabled = false;
 let modifiedData = null; 
 
-  // NOTE TO SELF YOU NEED TO ADD HTML AND JS LINK TO ALLOW VOLUME CONTROL ON ALL PAGES NOT JUST INDEX
     window.onSpotifyWebPlaybackSDKReady = () => {
         const accessToken = localStorage.getItem('accessToken')
         const refreshToken = localStorage.getItem('refreshToken')
@@ -25,6 +25,11 @@ let modifiedData = null;
             getOAuthToken: cb => { cb(accessToken); }
         });
 
+        player.addListener('initialization_error', ({ message }) => { console.error(message); });
+        player.addListener('authentication_error', ({ message }) => { console.error(message); });
+        player.addListener('account_error', ({ message }) => { console.error(message); });
+        player.addListener('playback_error', ({ message }) => { console.error(message); });
+
         // Connect to the Spotify player
         player.connect().then(success => {
             if (success) {
@@ -38,6 +43,7 @@ let modifiedData = null;
         player.addListener('ready', async ({ device_id }) => {
             console.log('Ready with Device ID', device_id);
             deviceId = device_id;
+            deviceIdCaptured = true;
         });
 
         player.addListener('player_state_changed', state => {
@@ -58,6 +64,18 @@ let modifiedData = null;
                     startTime = Date.now() - state.position;
                     timer = updateTimer(duration_ms, false);
                 }
+
+                const currentState = {
+                    trackUri: state.track_window.current_track.uri,
+                    playbackPosition: state.position,
+                    paused: state.paused,
+                    imageUrl: state.track_window.current_track.album.images[0].url,
+                    name: state.track_window.current_track.name,
+                    artist: state.track_window.current_track.artists.map(artist => artist.name).join(', '),
+                    albumTitle: state.track_window.current_track.album.name
+                };
+        
+                storePlaybackState(currentState);
         });
 
         player.addListener('not_ready', ({ device_id }) => {
@@ -451,6 +469,8 @@ async function setVolume(volumePercent) {
 
         // Update the volume bar
         updateVolumeBar(volumePercent);
+
+        sessionStorage.setItem('volumePercent', volumePercent)
     } catch (error) {
         console.error('Error setting volume:', error);
     }
@@ -465,7 +485,57 @@ const preloadNextData = async (trackData) => {
     }
 };
 
+// Function to store playback state in session storage
+function storePlaybackState(state) {
+    const stateString = JSON.stringify(state);
+    sessionStorage.setItem('spotifyPlaybackState', stateString);
+}
 
+// Function to retrieve playback state from session storage
+function getPlaybackState() {
+    const stateString = sessionStorage.getItem('spotifyPlaybackState');
+    return stateString ? JSON.parse(stateString) : null;
+}
+
+// Function to restore playback state
+async function restorePlaybackState() {
+    if (deviceIdCaptured) {
+        const playbackState = getPlaybackState();
+        const currentVolume = sessionStorage.getItem('volumePercent');
+        if (playbackState) {
+            try {
+                await startPlayback(playbackState.trackUri);
+                await setVolume(currentVolume);
+                await seekPlayback(playbackState.playbackPosition);
+                if (playbackState.paused) {
+                    await pausePlayback();
+                }
+
+                updateUI(playbackState)
+            } catch (error) {
+                console.error('Error restoring playback state:', error);
+            }
+        }
+    } else {
+        console.error('Device ID is not available. Cannot restore playback state.');
+    }
+}
+
+
+window.addEventListener('load', async () => {
+    if (!deviceIdCaptured) {
+        // Wait until deviceId is captured before restoring playback state
+        await new Promise(resolve => {
+            const interval = setInterval(() => {
+                if (deviceIdCaptured) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 100); // Check every 100ms
+        });
+    }
+    await restorePlaybackState();
+});
 
 
 const updateUI = (track) => {
@@ -499,7 +569,26 @@ const updateUI = (track) => {
         albumName.textContent = track.album.name
     }
     };
-    
+
+
+
+// window.addEventListener('beforeunload', async () => {
+//     if (deviceIdCaptured) {
+//         try {
+//             const state = await getCurrentState();
+//             const currentVolume = sessionStorage.getItem('volumePercent');
+//             const currentState = {
+//                 trackUri: state.item.uri,
+//                 playbackPosition: state.progress_ms, 
+//                 volumePercent: currentVolume, 
+//                 isPlaying: state.is_playing
+//             };
+//             storePlaybackState(currentState);
+//         } catch (error) {
+//             console.error('Error storing playback state before unloading:', error);
+//         }
+//     }
+// });
 
 
 // window.toggleShuffle = async () => {
