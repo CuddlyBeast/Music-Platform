@@ -734,9 +734,9 @@ html, body{
 .volume-bar {
     position: absolute;
     top: 0px;
-    left: -100px; /* Adjust as needed */
-    width: 100px; /* Adjust as needed */
-    height: 15px; /* Adjust as needed */
+    left: -100px;
+    width: 100px; 
+    height: 15px; 
     background-color: #ccc;
     border-radius: 5px;
     display: none;
@@ -749,7 +749,7 @@ html, body{
 
 .volume-level {
     height: 100%;
-    background-color: #007bff; /* Adjust color as needed */
+    background-color: #007bff; 
     border-radius: 5px;
 }
 

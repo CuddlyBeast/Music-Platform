@@ -6,7 +6,7 @@ let repeatMode = 'off';
 let isShuffleEnabled = false;
 let modifiedData = null; 
 
-
+  // NOTE TO SELF YOU NEED TO ADD HTML AND JS LINK TO ALLOW VOLUME CONTROL ON ALL PAGES NOT JUST INDEX
     window.onSpotifyWebPlaybackSDKReady = () => {
         const accessToken = localStorage.getItem('accessToken')
         const refreshToken = localStorage.getItem('refreshToken')

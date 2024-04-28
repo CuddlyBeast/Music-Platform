@@ -683,6 +683,37 @@ html, body{
     background-color: #0056b3;
 }
 
+.volume-control {
+    position: relative;
+    display: inline-block;
+}
+
+.volume-control .mute-button{
+    display: none;
+} 
+
+.volume-bar {
+    position: absolute;
+    top: 0px;
+    left: -100px;
+    width: 100px; 
+    height: 15px; 
+    background-color: #ccc;
+    border-radius: 5px;
+    display: none;
+    transform: scaleX(-1);
+}
+
+.volume-bar:hover {
+    cursor: pointer;
+}
+
+.volume-level {
+    height: 100%;
+    background-color: #007bff; 
+    border-radius: 5px;
+}
+
 @media screen and (max-width: 1400px) {
     .container .sidebar .playing .bottom p{
         font-size: 10px;

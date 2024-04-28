@@ -292,7 +292,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const volumeButton = document.querySelector('.volume-button-container');
         const volumeBar = document.querySelector('.volume-bar');
-        // const volumeLevel = document.querySelector('.volume-level');
 
         volumeButton.addEventListener('mouseenter', () => {
             volumeBar.style.display = 'block';
@@ -312,7 +311,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             const offsetX = event.clientX - boundingRect.left;
             const percentage = (offsetX / boundingRect.width) * 100;
         
-            // Send the volume percentage to your backend
             setVolume(percentage);
         });
 

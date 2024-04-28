@@ -86,6 +86,7 @@ function initializeMusicPlayer(data) {
 
     volumeButton.addEventListener('click', () => {
         toggleMute();
+        volumeBar.style.display = 'none';
     });
     
     volumeBar.addEventListener('click', (event) => {
@@ -93,7 +94,6 @@ function initializeMusicPlayer(data) {
         const offsetX = event.clientX - boundingRect.left;
         const percentage = (offsetX / boundingRect.width) * 100;
     
-        // Send the volume percentage to your backend
         setVolume(percentage);
     });
 }
