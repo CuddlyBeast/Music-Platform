@@ -65,7 +65,6 @@ createNewPlaylistLink.addEventListener('click', async function(event) {
         return;
     }
 
-    // Make an HTTP POST request to create a new playlist
     try {
         const token = localStorage.getItem('token');
         if (!token) {

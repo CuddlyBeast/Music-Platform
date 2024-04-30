@@ -48,7 +48,7 @@ router.get('/tracks/:trackId', ensureAccessToken, async (req, res) => {
 
 
 
-// Route for retrieving the top country songs from Spotify
+// Route for retrieving the top country recommendations from Spotify
 router.get('/playlists/top-country-songs', ensureAccessToken, async (req, res) => {
     try {
 
@@ -525,12 +525,17 @@ router.get('/recentlyPlayedAlbums', ensureAccessToken, async (req, res) => {
         const recentlyPlayedTracks = recentlyPlayedResponse.body.items;
 
         // Extract album IDs from the recently played tracks
-        const albumIds = recentlyPlayedTracks
-        .filter(track => track.track.album.album_type === 'album') 
-        .map(track => track.track.album.id);
+        const uniqueAlbumIds = new Set();
+        const uniqueRecentlyPlayedTracks = recentlyPlayedTracks.filter(track => {
+            if (track.track.album.album_type === 'album' && !uniqueAlbumIds.has(track.track.album.id)) {
+                uniqueAlbumIds.add(track.track.album.id);
+                return true;
+            }
+            return false;
+        });
 
         // Fetch album details for each album ID
-        const albumDetailsPromises = albumIds.map(albumId => spotifyApi.getAlbum(albumId));
+        const albumDetailsPromises = uniqueRecentlyPlayedTracks.map(track => spotifyApi.getAlbum(track.track.album.id));
         const albumDetailsResponses = await Promise.all(albumDetailsPromises);
         const albumDetails = albumDetailsResponses.map(response => response.body);
 
@@ -551,14 +556,21 @@ router.get('/recentlyPlayedAlbumsLimit', ensureAccessToken, async (req, res) => 
         const recentlyPlayedTracks = recentlyPlayedResponse.body.items;
 
         // Extract album IDs from the recently played tracks
-        const albumIds = recentlyPlayedTracks
-        .filter(track => track.track.album.album_type === 'album') 
-        .map(track => track.track.album.id);
+        const uniqueAlbumIds = new Set();
+        const uniqueRecentlyPlayedTracks = recentlyPlayedTracks.filter(track => {
+            if (track.track.album.album_type === 'album' && !uniqueAlbumIds.has(track.track.album.id)) {
+                uniqueAlbumIds.add(track.track.album.id);
+                return true;
+            }
+            return false;
+        });
 
-        const paginatedAlbumIds = albumIds.slice(offset, offset + limit);
+        const paginatedUniqueAlbumIds = uniqueRecentlyPlayedTracks
+        .map(track => track.track.album.id)
+        .slice(offset, offset + limit);
 
         // Fetch album details for each album ID
-        const albumDetailsPromises = paginatedAlbumIds.map(albumId => spotifyApi.getAlbum(albumId));
+        const albumDetailsPromises = paginatedUniqueAlbumIds.map(albumId => spotifyApi.getAlbum(albumId));
         const albumDetailsResponses = await Promise.all(albumDetailsPromises);
         const albumDetails = albumDetailsResponses.map(response => response.body);
 
