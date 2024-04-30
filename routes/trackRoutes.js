@@ -5,7 +5,7 @@ const { authenticateUser } = require('../middleware/authenticationMiddleware')
 const router = express.Router();
 
 
-// Route for retrieving track details by track ID
+// Route for retrieving track details by track ID (Not currently necessary)
 router.get('/tracks/:trackId', authenticateUser, async (req, res) => {
     try {
         const { trackId } = req.params;
@@ -18,7 +18,7 @@ router.get('/tracks/:trackId', authenticateUser, async (req, res) => {
 });
 
 
-// Route for searching tracks by name or other criteria.
+// Route for searching tracks by name or other criteria. (Not currently necessary)
 router.get('/tracks/search', authenticateUser, async (req, res) => {
     try {
         const { query } = req.query;
@@ -39,7 +39,6 @@ router.get('/tracks/search', authenticateUser, async (req, res) => {
 
 router.post("/track", authenticateUser, async (req, res) => {
     try {
-        console.log('req track body',req.body)
         const { spotifyId, title, artist, album, durationMs, releaseDate, image, uri } = req.body; 
 
     const existingTrack = await Track.findOne({ where: { spotifyId } });

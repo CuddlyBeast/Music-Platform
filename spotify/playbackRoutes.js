@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { spotifyApi } = require('./authRoutes');
 
-// NEED TO ADD THIS ROUTE TO LOGIC FOR VOLUME CONTROL
 router.post('/playback/volume', async (req, res) => {
     try {
         const { volumePercent, deviceId } = req.body;

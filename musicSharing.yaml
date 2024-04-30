@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: Music Sharing Platform
+  description: >-
+    These routes allows for a functional e-commerce website alongside admin
+    capabilities.
+  contact:
+    email: jonathan_cuddy@live.co.uk
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: tbd
+tags:
+  - name: Chill
+    description: Everything about the YouCountry? routes
+paths:
+  /chill/signup:
+    summary: creates a new user in the database
+    description: >-
+      Allows the user to create a profile of their information in order to
+      use the application.
+    post:
+      summary: >-
+        Requires information from the user to create a profile for them in the
+        database.
+      description: >-
+        The user provides a username as well as a unique email, 
+        and password. The function validates the password making sure it
+        is at least 8 characters long including lowercase, uppercase, and
+        numeric values. The function then hashes the password and the
+        information in stored in the database. If the new user creation is
+        successful the user will be notified.
+      operationId: sign_up
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - authRoutes
+  /chill/signin:
+    summary: >-
+      Allows the user to retrieve access their account and perform actions in
+      the application.
+    description: >-
+      The user signs in with their unique email and password. If the information
+      is correct they will receive a JWT token that will allow them to interact
+      with their profile and the application.
+    post:
+      summary: >-
+        User provides their email and password gaining authorization to interact
+        with the application.
+      description: >-
+        The user provides their email and password. The functions checks if the
+        email and password is valid notifying the user which if any are
+        incorrect. If both are correct they are given a token for an hour and
+        notified as such so they can navigate through the application and
+        interact with its functions.
+      operationId: sign_in
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - authRoutes
+  /chill/playlists:
+    get:
+      summary: 'Retrieve all playlists linked to the individuals account. '
+      description: 'Retrieve all playlists for given user. '
+      operationId: get_playlists
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - playlistRoutes
+  /chill/track:
+    post:
+      summary: When the user adds a track to their playlist that track's information is taken from the spotifyAPI and added to the YouCountry? database. 
+      description: >-
+        When the user adds a track to their playlist that tracks information is taken from the spotifyAPI and added to the YouCountry? database. If the track already exists in the database it does not create another copy of the track which would cause duplicates in user playlists. 
+      operationId: post_track
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - trackRoutes
+  /chill/user:
+    get:
+      summary: 'Retrieve a single user'
+      description: Allows for the viewing of a specific user's data by id
+      operationId: get_user
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - authRoutes
+  /chill/logout:
+    post:
+      summary: Destroys the user's session
+      description: Destroys the user's session
+      operationId: logout
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - authRoutes
+  /chill/playlist:
+    post:
+      summary: Create a new playlist linked the given user that is logged in.
+      description: Create a new playlist linked the given user that is logged in.
+      operationId: post_playlist
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - playlistRoutes
+  /chill/personalPlaylist/{id}:
+    put:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the playlist to update
+          schema:
+            type: string
+      summary: Update a playlist depending on the user's action a track can be added or removed for selected user playlists.
+      description: Update a playlist depending on the user's action a track can be added or removed for selected user playlists. User is identified with JSON Web Token. A single track can be added to multiple playlists at the same time and error handling deals with the process of attempting to add already present tracks to a playlist to stop duplicates.
+      operationId: change_playlist
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - playlistRoutes
+    delete:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the playlist to update
+          schema:
+            type: string
+      summary: Delete the entire playlist and all its connections to tracks.
+      description: Delete the entire playlist identified by its ID and all its connections to tracks, requires the user to be authenticated.
+      operationId: delete_playlist
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - playlistRoutes
+    get:
+      summary: Retrieve a specific playlist information by ID including all of its linked tracks..
+      description: Retrieve a specific playlist information by ID including all of its linked tracks.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the playlist to update
+          schema:
+            type: string
+      operationId: playlist_id
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - playlistRoutes

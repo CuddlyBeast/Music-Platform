@@ -31,6 +31,7 @@ const ensureAccessToken = async (req, res, next) => {
   next();
 };
 
+
 // Route for retrieving details of a specific track from Spotify
 router.get('/tracks/:trackId', ensureAccessToken, async (req, res) => {
     const { trackId } = req.params;
@@ -330,7 +331,6 @@ router.get('/albumsTotal', ensureAccessToken, async (req, res) => {
         // Extract album objects from the response
         const newCountryAlbums = albumsResponse.body.albums.items;
 
-        // Map the albums to the desired format
         const newAlbums = newCountryAlbums.map(album => ({
             id: album.id,
             name: album.name,
@@ -361,7 +361,6 @@ router.get('/albumsLimit', ensureAccessToken, async (req, res) => {
         // Extract album objects from the response
         const newCountryAlbums = albumsResponse.body.albums.items;
 
-        // Map the albums to the desired format
         const newAlbums = newCountryAlbums.map(album => ({
             id: album.id,
             name: album.name,
@@ -699,7 +698,7 @@ router.get('/search', ensureAccessToken, async (req, res) => {
         const options = {
             limit: 30,
             market: 'US' 
-            //need to create own logic to search for only country genre but might be better to just allow user the freedom to search anything
+            //could create own logic to search for only country genre but might be better to just allow user the freedom to search anything
         };
 
         const searchResults = await spotifyApi.search(searchText, [searchType], options);

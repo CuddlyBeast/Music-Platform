@@ -33,7 +33,6 @@ router.get("/personalPlaylist/:id", authenticateUser, async (req, res) => {
 
 router.put("/personalPlaylist/:id", authenticateUser, async (req, res) => {
     try {
-        console.log(req.body);
         const { id: playlistId } = req.params;
         const userId = req.user.id;
         const { action, spotifyId } = req.body;

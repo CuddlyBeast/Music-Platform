@@ -90,7 +90,7 @@ router.post('/logout', async (req, res) => {
   }
 });
 
-  // Profile Data
+  // Profile Data 
   router.get('/user', authenticateUser, async (req, res) => {
     try {
       const userId = req.user.id;
@@ -101,7 +101,7 @@ router.post('/logout', async (req, res) => {
     }
   });
 
-  // Update Profile Data
+  // Update Profile Data (Not currently necessary)
   router.put('/user', authenticateUser, async (req, res) => {
     try {
       const { username,	email, password } = req.body
