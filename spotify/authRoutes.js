@@ -2,17 +2,17 @@ const express = require('express');
 const router = express.Router();
 const SpotifyWebApi = require('spotify-web-api-node');
 
+const redirectUri = process.env.NODE_ENV === 'production' ? 'https://your-heroku-app-name.herokuapp.com/chill/callback' : 'http://localhost:3000/chill/callback';
 
 const spotifyApi = new SpotifyWebApi({
     clientId: '1e69079ae7904703a2c03ecab6c95f99',
     clientSecret: '884af1572aaf41b7a20721b833844e63',
-    redirectUri: 'http://localhost:3000/chill/callback'
+    redirectUri: redirectUri
   });
-
 
 router.get('/auth', (req, res) => {
     const clientId = '1e69079ae7904703a2c03ecab6c95f99';
-    const redirectUri = 'http://localhost:3000/chill/callback'; 
+    const redirectUri = redirectUri
     const scopes = ['user-read-private', 'user-read-email', 'user-read-recently-played', 'user-top-read', 'user-modify-playback-state', 'playlist-read-private', 'user-library-read', 'user-library-modify', 'user-follow-read', 'playlist-modify-public', 'playlist-modify-private', 'streaming', 'user-read-playback-state' ]; // Specify the required scopes
     const spotifyAuthUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}`;
 
