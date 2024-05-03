@@ -1,4 +1,4 @@
-const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+let BASE_URL = 'https://your-heroku-app.herokuapp.com/';
 
 async function getCurrentState() {
     try {

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+let BASE_URL = 'https://your-heroku-app.herokuapp.com/';
 
 function populateOverlayMenu(playlists) {
     const playlistContainer = document.createElement('div');
