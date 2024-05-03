@@ -26,7 +26,6 @@ body {
 .hero {
     height: 100%;
     width: 100%;
-    background-image: url("img/hero4.png");
     background-position: center;
     background-size: cover;
     position: absolute;

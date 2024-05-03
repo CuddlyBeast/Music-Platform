@@ -17,10 +17,10 @@
   },
   "production": {
     "dialect": "postgres",
-    "host": "localhost",
-    "username": "postgres",
-    "password": "postgres",
-    "database": "music",
+    "host": "c7vbm80blivm58.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com",
+    "username": "u82t8p68s7ubc7",
+    "password": "pb6caaf2283c9c682b50a7499285c99a1a627c900633adebe7bc973aa5a3d0a7d",
+    "database": "dfd9kdla7eirl6",
     "port": 5432
   }
 }
