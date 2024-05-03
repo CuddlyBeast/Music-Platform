@@ -1,6 +1,8 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 async function getCurrentState() {
     try {
-        const response = await fetch('http://localhost:3000/chill/playback/state', {
+        const response = await fetch(`${BASE_URL}chill/playback/state`, {
             method: 'GET'
         });
         if (response.ok) {

@@ -1,9 +1,11 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 document.addEventListener('DOMContentLoaded', async function() {
     try {
          const urlParams = new URLSearchParams(window.location.search);
          const playlistId = urlParams.get('id');
  
-         const response = await fetch(`http://localhost:3000/chill/playlists/${playlistId}`);
+         const response = await fetch(`${BASE_URL}chill/playlists/${playlistId}`);
          if (!response.ok) {
              throw new Error('Failed to fetch playlist details');
          }
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const playlistLikeButton = playlistInfo.querySelector('.bx.bxs-heart')
 
         playlistLikeButton.addEventListener('click', async () => {
-            const response = await fetch(`http://localhost:3000/chill/save-playlist/${playlist.id}`, {
+            const response = await fetch(`${BASE_URL}chill/save-playlist/${playlist.id}`, {
                 method: 'PUT'
             });
             if (!response.ok) {
@@ -84,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const likeButton = trackItem.querySelector('.bx.bxs-heart')
 
             likeButton.addEventListener('click', async () => {
-                const response = await fetch(`http://localhost:3000/chill/save-track/${track.id}`, {
+                const response = await fetch(`${BASE_URL}chill/save-track/${track.id}`, {
                     method: 'PUT'
                 });
                 if (!response.ok) {
@@ -97,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             plusIcon.addEventListener('click', async (event) => {
                 const token = localStorage.getItem('token');
-                const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+                const playlistsResponse = await fetch(`${BASE_URL}chill/playlists`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`

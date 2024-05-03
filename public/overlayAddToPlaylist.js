@@ -1,3 +1,5 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 function populateOverlayMenu(playlists) {
     const playlistContainer = document.createElement('div');
     playlistContainer.classList.add('playlist-container');
@@ -49,7 +51,7 @@ function displayOverlayMenu(event, song, playlistContainer) {
         const action = 'add';
         try {
             const promises = selectedPlaylists.map(playlistId => {
-                return fetch(`http://localhost:3000/chill/personalPlaylist/${playlistId}`, {
+                return fetch(`${BASE_URL}chill/personalPlaylist/${playlistId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -62,7 +64,7 @@ function displayOverlayMenu(event, song, playlistContainer) {
             const responses = await Promise.all(promises);
 
             if (responses.every(response => response.ok)) {
-                const spotifyResponse = await fetch(`http://localhost:3000/chill/tracks/${spotifyId}`);
+                const spotifyResponse = await fetch(`${BASE_URL}chill/tracks/${spotifyId}`);
                 if (!spotifyResponse.ok) {
                     throw new Error('Failed to fetch track details from Spotify');
                 }
@@ -79,7 +81,7 @@ function displayOverlayMenu(event, song, playlistContainer) {
                 const trackImage = trackData.album.images[0].url
         
                 // Post track details to your database
-                const trackPostResponse = await fetch('http://localhost:3000/chill/track', {
+                const trackPostResponse = await fetch(`${BASE_URL}chill/track`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,6 +1,8 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        const response = await fetch('http://localhost:3000/chill/mySavedTracks');
+        const response = await fetch(`${BASE_URL}chill/mySavedTracks`);
         if (!response.ok) {
             throw new Error('Failed to fetch country song recommendations');
         }
@@ -71,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             deleteIconElement.style.color = '#5773ff';
 
             deleteIcon.addEventListener('click', async () => {
-                const response = await fetch(`http://localhost:3000/chill/remove-track/${track.id}`, {
+                const response = await fetch(`${BASE_URL}chill/remove-track/${track.id}`, {
                     method: 'DELETE'
                 });
                 if (!response.ok) {
@@ -85,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             plusIcon.addEventListener('click', async (event) => {
                 const token = localStorage.getItem('token');
-                const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+                const playlistsResponse = await fetch(`${BASE_URL}chill/playlists`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`

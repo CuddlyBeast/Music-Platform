@@ -1,3 +1,5 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     const genre = params.get('genre');
@@ -67,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const likeButton = icon.querySelector('.bx.bxs-heart')
     
             likeButton.addEventListener('click', async () => {
-                const response = await fetch(`http://localhost:3000/chill/save-track/${song.id}`, {
+                const response = await fetch(`${BASE_URL}chill/save-track/${song.id}`, {
                     method: 'PUT'
                 });
                 if (!response.ok) {
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             plusIcon.addEventListener('click', async (event) => {
                 const token = localStorage.getItem('token');
-                const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+                const playlistsResponse = await fetch(`${BASE_URL}chill/playlists`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -173,7 +175,7 @@ function getArtistIds(genre) {
 
 const fetchRandomSongs = async (artistIds) => {
     try {
-        const response = await fetch('http://localhost:3000/chill/genre-songs', {
+        const response = await fetch(`${BASE_URL}chill/genre-songs`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,10 +1,12 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         const itemsPerPage = 8; 
         let currentPage = 1;
 
         // Fetch total number of playlists
-        const totalResponse = await fetch('http://localhost:3000/chill/newCountry?q=relaxing%20cozy%20chilled%20soft%20country&type=playlist');
+        const totalResponse = await fetch(`${BASE_URL}chill/newCountry?q=relaxing%20cozy%20chilled%20soft%20country&type=playlist`);
 
         if (!totalResponse.ok) {
             throw new Error('Failed to fetch total number of playlists');
@@ -68,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 async function fetchPlaylistsByPage(page, limit) {
-    const response = await fetch(`http://localhost:3000/chill/newCountryLimit?q=relaxing%20cozy%20sad%20chilled%20soft%20country&type=playlist&page=${page}&limit=${limit}`);
+    const response = await fetch(`${BASE_URL}chill/newCountryLimit?q=relaxing%20cozy%20sad%20chilled%20soft%20country&type=playlist&page=${page}&limit=${limit}`);
     if (!response.ok) {
         throw new Error('Failed to fetch country playlists');
     }
@@ -100,7 +102,7 @@ async function fetchPlaylistsByPage(page, limit) {
         heartIcon.classList.add('bx', 'bxs-heart');
 
         heartIcon.addEventListener('click', async () => {
-            const response = await fetch(`http://localhost:3000/chill/save-playlist/${playlist.id}`, {
+            const response = await fetch(`${BASE_URL}chill/save-playlist/${playlist.id}`, {
                 method: 'PUT'
             });
             if (!response.ok) {

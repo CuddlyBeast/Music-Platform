@@ -1,9 +1,11 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 document.addEventListener('DOMContentLoaded', async function() {
 
 try {
     const token = localStorage.getItem('token');
     // Fetch user playlists
-    const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+    const playlistsResponse = await fetch(`${BASE_URL}chill/playlists`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -71,7 +73,7 @@ createNewPlaylistLink.addEventListener('click', async function(event) {
             throw new Error('Token not found');
         }
 
-        const response = await fetch('http://localhost:3000/chill/playlist', {
+        const response = await fetch(`${BASE_URL}chill/playlist`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -116,7 +118,7 @@ createNewPlaylistLink.addEventListener('click', async function(event) {
 // Function to fetch user data
 const fetchUserData = async (token) => {
     try {
-        const response = await fetch('http://localhost:3000/chill/user', {
+        const response = await fetch(`${BASE_URL}chill/user`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -159,7 +161,7 @@ const addLogoutButton = () => {
     logoutButton.textContent = 'Logout';
     logoutButton.addEventListener('click', async () => {
     try {
-        const response = await fetch('http://localhost:3000/chill/logout', {
+        const response = await fetch(`${BASE_URL}chill/logout`, {
             method: 'POST'
         });
 

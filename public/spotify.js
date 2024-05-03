@@ -6,6 +6,7 @@ let lastPercentage = 0;
 let repeatMode = 'off'; 
 let isShuffleEnabled = false;
 let modifiedData = null; 
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
 
     window.onSpotifyWebPlaybackSDKReady = () => {
         const accessToken = localStorage.getItem('accessToken')
@@ -13,7 +14,7 @@ let modifiedData = null;
 
         if (!accessToken || !refreshToken) {
             try {
-                window.location.href = 'http://localhost:3000/chill/auth';
+                window.location.href = `${BASE_URL}chill/auth`;
             } catch (error) {
                 console.error('Error redirecting for authorization:', error);
             }
@@ -99,7 +100,7 @@ window.startPlayback = async (trackUri) => {
 
         if (!accessToken || !refreshToken) {
             try {
-                window.location.href = 'http://localhost:3000/chill/auth';
+                window.location.href = `${BASE_URL}chill/auth`;
             } catch (error) {
                 console.error('Error redirecting for authorization:', error);
             }
@@ -108,7 +109,7 @@ window.startPlayback = async (trackUri) => {
             throw new Error('Device ID is not available');
         }
 
-        const response = await fetch('http://localhost:3000/chill/playback/play', {
+        const response = await fetch(`${BASE_URL}chill/playback/play`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -182,7 +183,7 @@ window.pausePlayback = async () => {
             throw new Error('Access token or refresh token not available');
         }
 
-        const response = await fetch('http://localhost:3000/chill/playback/pause', {
+        const response = await fetch(`${BASE_URL}chill/playback/pause`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -208,7 +209,7 @@ window.pausePlayback = async () => {
 
 window.resumePlayback = async () => {
     try {
-        const response = await fetch('http://localhost:3000/chill/playback/resume', {
+        const response = await fetch(`${BASE_URL}chill/playback/resume`, {
             method: 'POST'
         });
         if (response.ok) {
@@ -224,7 +225,7 @@ window.resumePlayback = async () => {
 
 async function getCurrentState() {
     try {
-        const response = await fetch('http://localhost:3000/chill/playback/state', {
+        const response = await fetch(`${BASE_URL}chill/playback/state`, {
             method: 'GET'
         });
         if (response.ok) {
@@ -252,7 +253,7 @@ const seekPlayback = async (positionMs) => {
             throw new Error('Device ID is not available');
         }
 
-        const response = await fetch('http://localhost:3000/chill/playback/seek', {
+        const response = await fetch(`${BASE_URL}chill/playback/seek`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -402,7 +403,7 @@ async function toggleMute() {
         const isMuted = state && state.device.volume_percent === 0;
         const volumePercent = isMuted ? 100 : 0;
 
-        const response = await fetch('http://localhost:3000/chill/playback/volume', {
+        const response = await fetch(`${BASE_URL}chill/playback/volume`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -454,7 +455,7 @@ async function setVolume(volumePercent) {
 
         const adjustedVolumePercent = 100 - volumePercent;
 
-        const response = await fetch('http://localhost:3000/chill/playback/volume', {
+        const response = await fetch(`${BASE_URL}chill/playback/volume`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,

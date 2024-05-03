@@ -1,3 +1,5 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -7,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         let currentPage = 1;
 
         // Fetch total number of albums
-        const totalResponse = await fetch(`http://localhost:3000/chill/totalArtistAlbums/${artistId}`);
+        const totalResponse = await fetch(`${BASE_URL}chill/totalArtistAlbums/${artistId}`);
         if (!totalResponse.ok) {
             throw new Error('Failed to fetch total number of albums');
         }
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 async function fetchAlbumsByPage(page, limit, artistId) {
-    const response = await fetch(`http://localhost:3000/chill/limitArtistAlbums/${artistId}?page=${page}&limit=${limit}`);
+    const response = await fetch(`${BASE_URL}chill/limitArtistAlbums/${artistId}?page=${page}&limit=${limit}`);
     if (!response.ok) {
         throw new Error('Failed to fetch country albums');
     }
@@ -103,7 +105,7 @@ async function fetchAlbumsByPage(page, limit, artistId) {
         heartIcon.classList.add('bx', 'bxs-heart');
 
         heartIcon.addEventListener('click', async () => {
-            const response = await fetch(`http://localhost:3000/chill/save-album/${albums.id}`, {
+            const response = await fetch(`${BASE_URL}chill/save-album/${albums.id}`, {
                 method: 'PUT'
             });
             if (!response.ok) {

@@ -6,14 +6,14 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const spotifyApi = new SpotifyWebApi({
     clientId: '1e69079ae7904703a2c03ecab6c95f99',
     clientSecret: '884af1572aaf41b7a20721b833844e63',
-    redirectUri: 'http://youcountry-f1df846a7cc3.herokuapp.com/chill/callback'
+    redirectUri: 'https://youcountry-f1df846a7cc3.herokuapp.com/chill/callback'
   });
 
 // local env redirect:  'http://localhost:3000/chill/callback'
 
 router.get('/auth', (req, res) => {
     const clientId = '1e69079ae7904703a2c03ecab6c95f99';
-    const redirectUri = 'http://youcountry-f1df846a7cc3.herokuapp.com/chill/callback'; 
+    const redirectUri = 'https://youcountry-f1df846a7cc3.herokuapp.com/chill/callback'; 
     const scopes = ['user-read-private', 'user-read-email', 'user-read-recently-played', 'user-top-read', 'user-modify-playback-state', 'playlist-read-private', 'user-library-read', 'user-library-modify', 'user-follow-read', 'playlist-modify-public', 'playlist-modify-private', 'streaming', 'user-read-playback-state' ]; 
     const spotifyAuthUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}`;
 

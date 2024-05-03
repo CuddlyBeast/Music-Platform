@@ -1,4 +1,4 @@
-
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
 
 document.addEventListener('DOMContentLoaded', async function() {
     try {
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const filter = urlParams.get('filter');
         const searchText = urlParams.get('searchText');
 
-        const response = await fetch(`http://localhost:3000/chill/search?filter=${filter}&searchText=${searchText}`);
+        const response = await fetch(`${BASE_URL}chill/search?filter=${filter}&searchText=${searchText}`);
 
         if (!response.ok) {
             throw new Error('Failed to fetch search data');
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const likeButton = icon.querySelector('.bx.bxs-heart')
     
             likeButton.addEventListener('click', async () => {
-                const response = await fetch(`http://localhost:3000/chill/save-track/${track.id}`, {
+                const response = await fetch(`${BASE_URL}chill/save-track/${track.id}`, {
                     method: 'PUT'
                 });
                 if (!response.ok) {
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             plusIcon.addEventListener('click', async (event) => {
                 const token = localStorage.getItem('token');
-                const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+                const playlistsResponse = await fetch(`${BASE_URL}chill/playlists`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -274,7 +274,7 @@ function formatDuration(duration_ms) {
 
 
 async function fetchAlbumsByPage(filter, searchText, page, limit) {
-    const response = await fetch(`http://localhost:3000/chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
+    const response = await fetch(`${BASE_URL}chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
     if (!response.ok) {
         throw new Error('Failed to fetch country albums');
     }
@@ -304,7 +304,7 @@ async function fetchAlbumsByPage(filter, searchText, page, limit) {
         heartIcon.classList.add('bx', 'bxs-heart');
 
         heartIcon.addEventListener('click', async () => {
-            const response = await fetch(`http://localhost:3000/chill/save-album/${albums.id}`, {
+            const response = await fetch(`${BASE_URL}chill/save-album/${albums.id}`, {
                 method: 'PUT'
             });
             if (!response.ok) {
@@ -332,7 +332,7 @@ function viewAlbums(albumsId) {
 
 
 async function fetchPlaylistsByPage(filter, searchText, page, limit) {
-    const response = await fetch(`http://localhost:3000/chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
+    const response = await fetch(`${BASE_URL}chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
     if (!response.ok) {
         throw new Error('Failed to fetch country playlists');
     }
@@ -362,7 +362,7 @@ async function fetchPlaylistsByPage(filter, searchText, page, limit) {
         heartIcon.classList.add('bx', 'bxs-heart');
 
         heartIcon.addEventListener('click', async () => {
-            const response = await fetch(`http://localhost:3000/chill/save-playlist/${playlist.id}`, {
+            const response = await fetch(`${BASE_URL}chill/save-playlist/${playlist.id}`, {
                 method: 'PUT'
             });
             if (!response.ok) {
@@ -390,7 +390,7 @@ function viewPlaylist(playlistId) {
 
 
 async function fetchArtistsByPage(filter, searchText, page, limit) {
-    const response = await fetch(`http://localhost:3000/chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
+    const response = await fetch(`${BASE_URL}chill/searchLimit?filter=${filter}&searchText=${searchText}&page=${page}&limit=${limit}`);
     if (!response.ok) {
         throw new Error('Failed to fetch country Artists');
     }
@@ -420,7 +420,7 @@ async function fetchArtistsByPage(filter, searchText, page, limit) {
         heartIcon.classList.add('bx', 'bxs-heart');
 
         heartIcon.addEventListener('click', async () => {
-            const response = await fetch(`http://localhost:3000/chill/save-artist/${artist.id}`, {
+            const response = await fetch(`${BASE_URL}chill/save-artist/${artist.id}`, {
                 method: 'PUT'
             });
             if (!response.ok) {

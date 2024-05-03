@@ -1,10 +1,12 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         const itemsPerPage = 8; 
         let currentPage = 1;
 
         // Fetch total number of albums
-        const totalResponse = await fetch('http://localhost:3000/chill/mySavedAlbums');
+        const totalResponse = await fetch(`${BASE_URL}chill/mySavedAlbums`);
         if (!totalResponse.ok) {
             throw new Error('Failed to fetch total number of albums');
         }
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 async function fetchAlbumsByPage(page, limit) {
-    const response = await fetch(`http://localhost:3000/chill/mySavedAlbumsLimit?page=${page}&limit=${limit}`);
+    const response = await fetch(`${BASE_URL}chill/mySavedAlbumsLimit?page=${page}&limit=${limit}`);
     if (!response.ok) {
         throw new Error('Failed to fetch country albums');
     }
@@ -102,7 +104,7 @@ async function fetchAlbumsByPage(page, limit) {
         deleteIcon.classList.add('bx', 'bx-x-circle');
 
         deleteIcon.addEventListener('click', async () => {
-            const response = await fetch(`http://localhost:3000/chill/remove-album/${albums.album.id}`, {
+            const response = await fetch(`${BASE_URL}chill/remove-album/${albums.album.id}`, {
                 method: 'DELETE'
             });
             if (!response.ok) {

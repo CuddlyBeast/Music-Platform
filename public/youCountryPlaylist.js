@@ -1,3 +1,5 @@
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+
 document.addEventListener('DOMContentLoaded', async function() {
     try {
          const urlParams = new URLSearchParams(window.location.search);
@@ -5,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
          const token = localStorage.getItem('token');
  
-         const response = await fetch(`http://localhost:3000/chill/personalPlaylist/${playlistId}`, {
+         const response = await fetch(`${BASE_URL}chill/personalPlaylist/${playlistId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -46,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const confirmed = window.confirm('Are you sure you want to delete this playlist?');
 
             if (confirmed) {
-                const response = await fetch(`http://localhost:3000/chill/playlist/${playlistId}`, {
+                const response = await fetch(`${BASE_URL}chill/playlist/${playlistId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -107,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const likeButton = trackItem.querySelector('.bx.bxs-heart')
 
             likeButton.addEventListener('click', async () => {
-                const response = await fetch(`http://localhost:3000/chill/save-track/${track.spotifyId}`, {
+                const response = await fetch(`${BASE_URL}chill/save-track/${track.spotifyId}`, {
                     method: 'PUT'
                 });
                 if (!response.ok) {
@@ -127,7 +129,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const spotifyId = track.spotifyId; 
                 const action = 'remove';
                 try {
-                    const response = await fetch(`http://localhost:3000/chill/personalPlaylist/${selectedPlaylist}`, {
+                    const response = await fetch(`${BASE_URL}chill/personalPlaylist/${selectedPlaylist}`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -150,7 +152,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             plusIcon.addEventListener('click', async (event) => {
                 const token = localStorage.getItem('token');
-                const playlistsResponse = await fetch('http://localhost:3000/chill/playlists', {
+                const playlistsResponse = await fetch(`${BASE_URL}chill/playlists`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`

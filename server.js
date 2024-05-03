@@ -26,7 +26,7 @@ app.use(helmet.contentSecurityPolicy({
         fontSrc: ["'self'", "https://fonts.googleapis.com/", "https://fonts.gstatic.com", "https://unpkg.com/"],
         styleSrc: ["'self'", "https://fonts.googleapis.com/", "https://unpkg.com/"],
         imgSrc: ["'self'", "https://i.scdn.co", "https://image-cdn-ak.spotifycdn.com", 'https://mosaic.scdn.co', 'https://image-cdn-fa', 'https://image-cdn-fa.spotifycdn.com/', 'https://seed-mix-image.spotifycdn.com', 'https://i2o.scdn.co', 'https://seeded-session-images.scdn.co', 'https://thisis-images.spotifycdn.com'],
-        frameSrc: ["'self'", "http://localhost:3000/", "https://sdk.scdn.co", 'https://api.spotify.com', ' https://cpapi.spotify.com'], 
+        frameSrc: ["'self'", "http://localhost:3000/", "https://youcountry-f1df846a7cc3.herokuapp.com", "https://sdk.scdn.co", 'https://api.spotify.com', ' https://cpapi.spotify.com'], 
         formAction: ["'self'"]
     }
 }))

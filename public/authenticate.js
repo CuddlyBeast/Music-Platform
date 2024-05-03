@@ -1,5 +1,6 @@
-// Swap between Sign-in And Sign-up Form
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
 
+// Swap between Sign-in And Sign-up Form
 const wrapper = document.querySelector('.wrapper')
 const loginLink = document.querySelector('.login-link')
 const registerLink = document.querySelector('.register-link')
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Login
     const handleLogin = async (email, password) => {
         try {
-            const response = await fetch('http://localhost:3000/chill/signin', {
+            const response = await fetch(`${BASE_URL}chill/signin`, {
                 method: 'POST',
                 body: JSON.stringify({ email, password }),
                 headers: {
@@ -67,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     
         try {
-            const response = await fetch('http://localhost:3000/chill/signup', {
+            const response = await fetch(`${BASE_URL}chill/signup`, {
                 method: 'POST',
                 body: JSON.stringify(jsonData),
                 headers: {
