@@ -1,5 +1,3 @@
-let BASE_URL = 'https://your-heroku-app.herokuapp.com/';
-
 document.addEventListener('DOMContentLoaded', async function() {
     const urlParams = new URLSearchParams(window.location.search);
     
@@ -8,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     if (!accessToken || !refreshToken) {
         try {
-            window.location.href = `${BASE_URL}chill/auth`;
+            window.location.href = `${process.env.BASE_URL}chill/auth`;
         } catch (error) {
             console.error('Error redirecting for authorization:', error);
         }
@@ -20,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     
     try {
-        const response = await fetch(`${BASE_URL}chill/playlists/top-country-songs`);
+        const response = await fetch(`${process.env.BASE_URL}chill/playlists/top-country-songs`);
     if (!response.ok) {
         throw new Error('Failed to fetch country song recommendations');
     }
@@ -71,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     heartIcon.classList.add('bx', 'bxs-heart');
 
     heartIcon.addEventListener('click', async () => {
-        const response = await fetch(`${BASE_URL}chill/save-track/${firstSong.id}`, {
+        const response = await fetch(`${process.env.BASE_URL}chill/save-track/${firstSong.id}`, {
             method: 'PUT'
         });
         if (!response.ok) {
@@ -85,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     plusIcon.addEventListener('click', async (event) => {
         const token = localStorage.getItem('token');
-        const playlistsResponse = await fetch(`${BASE_URL}chill/playlists`, {
+        const playlistsResponse = await fetch(`${process.env.BASE_URL}chill/playlists`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -189,7 +187,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const likeButton = icon.querySelector('.bx.bxs-heart')
 
         likeButton.addEventListener('click', async () => {
-            const response = await fetch(`${BASE_URL}chill/save-track/${song.id}`, {
+            const response = await fetch(`${process.env.BASE_URL}chill/save-track/${song.id}`, {
                 method: 'PUT'
             });
             if (!response.ok) {
@@ -203,7 +201,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         plusIcon.addEventListener('click', async (event) => {
             const token = localStorage.getItem('token');
-            const playlistsResponse = await fetch(`${BASE_URL}chill/playlists`, {
+            const playlistsResponse = await fetch(`${process.env.BASE_URL}chill/playlists`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
