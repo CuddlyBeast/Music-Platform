@@ -24,6 +24,7 @@
     "express-session": "^1.18.0",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
+    "sequelize": "^6.37.3",
     "spotify-web-api-node": "^5.0.2",
     "validator": "^13.11.0"
   }
