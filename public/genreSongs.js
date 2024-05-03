@@ -1,5 +1,3 @@
-let BASE_URL = 'https://your-heroku-app.herokuapp.com/';
-
 document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     const genre = params.get('genre');

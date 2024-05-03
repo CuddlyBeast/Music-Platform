@@ -1,4 +1,4 @@
-let BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
 
 // Swap between Sign-in And Sign-up Form
 const wrapper = document.querySelector('.wrapper')

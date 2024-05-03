@@ -1,5 +1,3 @@
-let BASE_URL = 'https://your-heroku-app.herokuapp.com/';
-
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         const response = await fetch(`${BASE_URL}chill/mySavedTracks`);

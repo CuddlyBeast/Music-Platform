@@ -1,5 +1,4 @@
-let BASE_URL = 'https://your-heroku-app.herokuapp.com/';
-
+// first attempt to make music persist across pages
 async function getCurrentState() {
     try {
         const response = await fetch(`${BASE_URL}chill/playback/state`, {
