@@ -16,5 +16,13 @@
     "url": "https://github.com/CuddlyBeast/Music-Platform/issues"
   },
   "homepage": "https://github.com/CuddlyBeast/Music-Platform#readme",
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "helmet": "^7.1.0",
+    "validator": "^13.11.0"
+  }
 }
