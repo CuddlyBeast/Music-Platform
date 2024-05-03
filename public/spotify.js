@@ -6,7 +6,7 @@ let lastPercentage = 0;
 let repeatMode = 'off'; 
 let isShuffleEnabled = false;
 let modifiedData = null; 
-const BASE_URL = 'https://your-heroku-app.herokuapp.com/';
+const BASE_URL = 'https://youcountry-f1df846a7cc3.herokuapp.com/';
 
     window.onSpotifyWebPlaybackSDKReady = () => {
         const accessToken = localStorage.getItem('accessToken')
