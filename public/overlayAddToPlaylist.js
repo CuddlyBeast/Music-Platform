@@ -48,53 +48,57 @@ function displayOverlayMenu(event, song, playlistContainer) {
         const spotifyId = song; 
         const action = 'add';
         try {
-            const promises = selectedPlaylists.map(playlistId => {
-                return fetch(`${BASE_URL}chill/personalPlaylist/${playlistId}`, {
+            
+            const spotifyResponse = await fetch(`${BASE_URL}chill/tracks/${spotifyId}`);
+            if (!spotifyResponse.ok) {
+                throw new Error('Failed to fetch track details from Spotify');
+            }
+            const trackData = await spotifyResponse.json();
+
+            console.log(trackData)
+            const trackSpotifyUri = trackData.uri
+            const trackSpotifyId = trackData.id
+            const trackTitle = trackData.name
+            const trackArtist = trackData.artists.map(artist => artist.name).join(', ');
+            const trackAlbum = trackData.album.name
+            const trackDurationMs = trackData.duration_ms
+            const trackReleaseDate = trackData.album.release_date
+            const trackImage = trackData.album.images[0].url
+    
+            // Post track details to your database
+            const trackPostResponse = await fetch(`${BASE_URL}chill/track`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ spotifyId:trackSpotifyId, title:trackTitle, artist:trackArtist, album:trackAlbum, durationMs:trackDurationMs, releaseDate:trackReleaseDate, image: trackImage, uri: trackSpotifyUri })
+            });
+    
+            if (!trackPostResponse.ok) {
+                throw new Error('Failed to add track to database');
+            }
+
+            selectedPlaylists.forEach(playlistId => {
+                fetch(`${BASE_URL}chill/personalPlaylist/${playlistId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ spotifyId, action })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to add track to playlist ${playlistId}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding track to playlist:', error);
                 });
             });
+            
 
-            const responses = await Promise.all(promises);
-
-            if (responses.every(response => response.ok)) {
-                const spotifyResponse = await fetch(`${BASE_URL}chill/tracks/${spotifyId}`);
-                if (!spotifyResponse.ok) {
-                    throw new Error('Failed to fetch track details from Spotify');
-                }
-                const trackData = await spotifyResponse.json();
-
-                console.log(trackData)
-                const trackSpotifyUri = trackData.uri
-                const trackSpotifyId = trackData.id
-                const trackTitle = trackData.name
-                const trackArtist = trackData.artists.map(artist => artist.name).join(', ');
-                const trackAlbum = trackData.album.name
-                const trackDurationMs = trackData.duration_ms
-                const trackReleaseDate = trackData.album.release_date
-                const trackImage = trackData.album.images[0].url
-        
-                // Post track details to your database
-                const trackPostResponse = await fetch(`${BASE_URL}chill/track`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ spotifyId:trackSpotifyId, title:trackTitle, artist:trackArtist, album:trackAlbum, durationMs:trackDurationMs, releaseDate:trackReleaseDate, image: trackImage, uri: trackSpotifyUri })
-                });
-        
-                if (!trackPostResponse.ok) {
-                    throw new Error('Failed to add track to database');
-                }
-        
-            } else {
-                throw new Error('Failed to add tracks to some playlists');
-            }
         } catch (error) {
             console.error('Error adding tracks to playlists:', error);
         }
