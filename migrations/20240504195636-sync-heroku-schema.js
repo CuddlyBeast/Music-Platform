@@ -139,12 +139,12 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      trackId: {
+      spotifyId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'Tracks',
-          key: 'id',
+          key: 'spotifyId',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
@@ -163,7 +163,7 @@ module.exports = {
 
     // Add foreign key constraints
     await queryInterface.addConstraint('PlaylistTracks', {
-      fields: ['playlistId', 'trackId'],
+      fields: ['playlistId', 'spotifyId'],
       type: 'unique',
       name: 'unique_playlist_track',
     });
