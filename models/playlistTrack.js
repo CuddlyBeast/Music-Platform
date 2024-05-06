@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     spotifyId: DataTypes.STRING,
   }, {
     sequelize,
+    tableName: 'playlisttracks',
     modelName: 'PlaylistTrack',
   });
   return PlaylistTrack;
