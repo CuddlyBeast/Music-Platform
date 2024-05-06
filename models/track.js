@@ -15,8 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'spotifyId',
         as: 'playlists'
       });
-
-      this.hasMany(models.UserInteraction, { foreignKey: 'trackId' });
     }
   }
   Track.init({

@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Playlist, { foreignKey: 'userId' });
-      this.hasMany(models.UserInteraction, { foreignKey: 'userId' });
     }
   }
   User.init({
