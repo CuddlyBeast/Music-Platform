@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.hasMany(models.Playlist, { foreignKey: 'userId' });
+      this.hasMany(models.Playlist, { foreignKey: 'userId', as: 'playlists' });
     }
   }
   User.init({
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'User',
+    modelName: 'user',
   });
   return User;
 };
