@@ -9,12 +9,28 @@ const env = process.env.NODE_ENV || 'production';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
+// Sequelize configuration
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  sequelize = new Sequelize(process.env[config.use_env_variable], {
+    ...config,
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false // unable to get local issuer certificate...
+      }
+    }
+  });
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(config.database, config.username, config.password, {
+    ...config,
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false // unable to get local issuer certificate...
+      }
+    }
+  });
 }
+
 
 fs
   .readdirSync(__dirname)
