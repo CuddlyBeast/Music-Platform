@@ -904,5 +904,9 @@ html, body{
         padding-left: 5px;
     }
 
+    .container main .playlist .music-list .items .item .info{
+        gap: 10px;
+    }
+
     
 }

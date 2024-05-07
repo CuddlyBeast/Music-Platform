@@ -754,6 +754,10 @@ html, body{
         grid-template-columns: 1fr;
     }
 
+    .container main .playlist .genres .items {
+        grid-template-columns: 1fr;
+    }
+
     .container main header .search input{
         display: block;
     }

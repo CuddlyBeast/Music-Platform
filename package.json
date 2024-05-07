@@ -2,7 +2,7 @@
   "name": "musicplatform",
   "version": "1.0.0",
   "description": "Music hosting platform using spotify api",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "npm test"
   },
